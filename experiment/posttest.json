@@ -2,8 +2,7 @@
   "version": 2.0,
   "questions": [
     {
-      "question": "If the transmit power is 50 mW, the gains of the transmitter and receiver antennas are 10 and 5 respectively, and the wavelength is 0.15 m, what is the received power at a distance 
-of 5m?",
+      "question": "If the transmit power is 50 mW, the gains of the transmitter and receiver antennas are 10 and 5 respectively, and the wavelength is 0.15 m, what is the received power at a distance of 5m?",
       "answers": {
         "a": "0.75 mW",
         "b": "1.125 mW",
