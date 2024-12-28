@@ -2,37 +2,88 @@
   "version": 2.0,
   "questions": [
     {
-      "question": "This is a Sample Question 1?",
+      "question": "Which of the following factors affects pathloss?",
       "answers": {
-        "a": "answer1",
-        "b": "answer2",
-        "c": "answer3",
-        "d": "answer4"
+        "a": "Antenna height",
+        "b": "Distance between transmitter and receiver",
+        "c": "Carrier frequency",
+        "d": "All of the above"
       },
       "explanations": {
-        "a": "Explanation 1  <a href='www.google.com'>here</a>",
-        "b": "Explanation 2",
-        "c": "Explanation 2",
-        "d": "Explanation 2"
+        "a": "Pathloss depends on other factors too..",
+        "b": "Pathloss depends on other factors too..",
+        "c": "Pathloss depends on other factors too..",
+        "d": "Correct answer!"
+      },
+      "correctAnswer": "d",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Which of the following can cause shadowing?",
+      "answers": {
+        "a": "Buildings",
+        "b": "Trees",
+        "c": "moving vehicles",
+        "d": "All of the above"
+      },
+      "explanations": {
+        "a": "Any obstacle leads to attenuation",
+        "b": "Any obstacle leads to attenuation",
+        "c": "Any obstacle leads to attenuation",
+        "d": "Correct answer!"
+      },
+      "correctAnswer": "d",
+      "difficulty": "beginner"
+    }
+    {
+      "question": "How does shadowing affect pathloss?",
+      "answers": {
+        "a": "Increases it in a predictable way",
+        "b": "Causes random variations in received signal strength",
+        "c": "Decreases it in a random way",
+        "d": "Causes a fixed reduction in signal power"
+      },
+      "explanations": {
+        "a": "Different obstacles lead to different attenuations, thus leads to random variations",
+        "b": "Correct answer!",
+        "c": "Different obstacles lead to different attenuations, thus leads to random variations",
+        "d": "Different obstacles lead to different attenuations, thus leads to random variations"
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Which frequency band would likely experience lower pathloss over the same distance?",
+      "answers": {
+        "a": "700 MHz",
+        "b": "2.5 GHz",
+        "c": "5000 MHz",
+        "d": "200 GHz"
+      },
+      "explanations": {
+        "a": "Correct answer!",
+        "b": "Higher the frequency of the signal, more the attenuation it undergoes",
+        "c": "Higher the frequency of the signal, more the attenuation it undergoes",
+        "d": "Higher the frequency of the signal, more the attenuation it undergoes"
       },
       "correctAnswer": "a",
       "difficulty": "beginner"
     },
     {
-      "question": "This is a Sample Question 2?",
+      "question": "If the transmit power is 50 dBm and the received power is 40 dBm, what is the pathloss in dB?",
       "answers": {
-        "a": "answer1",
-        "b": "answer2",
-        "c": "answer3",
-        "d": "answer4"
+        "a": "10 dB",
+        "b": "90 dB",
+        "c": "40 dB",
+        "d": "-10 dB"
       },
       "explanations": {
-        "a": "Explanation 1  <a href='www.google.com'>here</a>",
-        "b": "Explanation 2",
-        "c": "Explanation 2",
-        "d": "Explanation 2"
+        "a": "Correct answer!",
+        "b": "Pathloss is the difference of transmitted and the received signal strength",
+        "c": "Pathloss is not the received power, but the difference of the transmitted and received signal strength",
+        "d": "Pathloss is the difference of transmitted and the received signal strength"
       },
-      "correctAnswer": "c",
+      "correctAnswer": "a",
       "difficulty": "beginner"
     }
   ]
