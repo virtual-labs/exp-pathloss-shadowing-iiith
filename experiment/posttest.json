@@ -2,37 +2,55 @@
   "version": 2.0,
   "questions": [
     {
-      "question": "This is a Sample Question 1?",
+      "question": "If the transmit power $P_t$ is 50 mW, the gains of the transmitter and receiver antennas are 10 and 5 respectively, and the wavelength is 0.15 m, what is the received power at a distance 
+of 5m?",
       "answers": {
-        "a": "answer1",
-        "b": "answer2",
-        "c": "answer3",
-        "d": "answer4"
+        "a": "0.75 mW",
+        "b": "1.125 mW",
+        "c": "2.25 mW",
+        "d": "3 mW"
       },
       "explanations": {
-        "a": "Explanation 1  <a href='www.google.com'>here</a>",
-        "b": "Explanation 2",
-        "c": "Explanation 2",
-        "d": "Explanation 2"
+        "a": "Try using the Friis free-space equation",
+        "b": "Correct answer!",
+        "c": "Try using the Friis free-space equation",
+        "d": "Try using the Friis free-space equation"
       },
-      "correctAnswer": "a",
+      "correctAnswer": "b",
       "difficulty": "beginner"
     },
     {
-      "question": "This is a Sample Question 2?",
+      "question": "How does the distance between the transmitter and receiver affect the measured pathloss in your experiment?",
       "answers": {
-        "a": "answer1",
-        "b": "answer2",
-        "c": "answer3",
-        "d": "answer4"
+        "a": "Pathloss decreases as distance increases",
+        "b": "Pathloss remains constant regardless of distance",
+        "c": "Pathloss increases with distance",
+        "d": "Pathloss fluctuates unpredictably"
       },
       "explanations": {
-        "a": "Explanation 1  <a href='www.google.com'>here</a>",
-        "b": "Explanation 2",
-        "c": "Explanation 2",
-        "d": "Explanation 2"
+        "a": "Pathloss is a metric that depends (inversely) on distance",
+        "b": "Pathloss is a metric that depends (inversely) on distance",
+        "c": "Correct answer!",
+        "d": "Pathloss is a metric that depends (inversely) on distance"
       },
       "correctAnswer": "c",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "If the combined antenna gain is 100 and the distance between transmitter and receiver is 100 m, how would the pathloss change if the distance increased to 200 m, assuming frequency and wavelength remain constant?",
+      "answers": {
+        "a": "Pathloss would double",
+        "b": "Pathloss would quadruple",
+        "c": "Pathloss would remain the same",
+        "d": "Pathloss would halve"
+      },
+      "explanations": {
+        "a": "Pathloss is proportional to $d^2$, so doubling the distance results in a fourfold increase in pathloss",
+        "b": "Correct answer!",
+        "c": "Pathloss is proportional to $d^2$, so doubling the distance results in a fourfold increase in pathloss",
+        "d": "Pathloss is proportional to $d^2$, so doubling the distance results in a fourfold increase in pathloss"
+      },
+      "correctAnswer": "b",
       "difficulty": "beginner"
     }
   ]
