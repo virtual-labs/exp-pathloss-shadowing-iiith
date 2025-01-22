@@ -1,8 +1,6 @@
-# Theory
-
 Link budget is an important aspect of wireless communication systems design. It accounts for all gains and losses. Two major factors that cause a variation in the received signal(loss) are Pathloss and shadowing. Thus, an accurate characterization of these two effects is crucial for planning the link budget. Let us now understand these effects in detail.
 
-## PathLoss
+## Pathloss
 Pathloss is a measure of signal attenuation along its path from the $T_{x}$ and $R_{x}$. This leads to a reduction in signal received signal power. In general, we can say that pathloss is dependent on the following factors:
 1) Total recieved power $P_r$ w.r.t the total transmit power $P_t$. Intuitively, if $P_r$ is high, then the pathloss is low.
 2) Antenna gains of $T_x$ and $R_x$, $G_t$ and $G_r$ respectively. Antenna gain measures the efficiency of an antenna to focus the signal energy in a specific direction. Intuitively, we can say that a direction-specific antenna(the one with higher G) leads to a reduction in pathloss.
@@ -24,7 +22,7 @@ where $ G_{t} G_{r}=\sqrt{G}$ is the combined antenna gain.
 
 We can clearly see that the intuitive understanding is in coherence with the derived formula.
 
-## PathLoss with shadowing
+## Pathloss with shadowing
 Now, after clearly understanding the concept of pathloss, have you wondered if the pathloss in any direction of the same distance is equal? Not necessarily. This gives rise to the effect of shadowing! Not just the distance between the $T_{x}$ and $R_{x}$, but also the surrounding environment b/w them leads to an attenuation of the received signal power. Shadowing is caused by the obstacles between the $T_{x}$ and $R_{x}$ that lead to absorption, reflection, and scattering etc of the signal. The attenuation due to this is a random value. This leads to an additional term in the pathloss equation as follows
 ```math
     PL(\text{in dB})= 10 \log _{10}\left(\frac{4 \pi d}{\lambda \sqrt{G}}\right)^{2}+\psi
