@@ -1,8 +1,5 @@
-<<<<<<< HEAD
 /* You CSS goes in here */@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Ubuntu:wght@400;500;700&display=swap');
-=======
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Ubuntu:wght@400;500;700&display=swap');
->>>>>>> origin/dev
 
 *{
     margin: 0;
@@ -440,7 +437,7 @@ th{
 .center-column {
   flex: 8; /* Increased ratio for wider center */
   background-color: #ffffff;
-  border: 2px solid #000000;
+  border: 2px solid #98CB3B;
   border-radius: 10px;
   padding: 20px;
   height: 430px;
@@ -545,9 +542,6 @@ height: inherit;
     height: inherit;
 }
 
-
-
-
 .antenna {
 position: absolute;
 bottom: 40%;
@@ -612,28 +606,35 @@ transform: scale(1.1);
 }
 
 .metrics {
-display: grid;
-grid-template-columns: repeat(2, 1fr);
-gap:1rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
 }
 
 .metric-card {
-background: var(--background-color);
-padding: 0.75rem;
-border-radius: 8px;
-text-align: center;
+  background: var(--card-background);
+  padding: 1rem;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.metric-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 12px -2px rgb(0 0 0 / 0.2);
 }
 
 .metric-value {
-font-size: 1.5rem;
-font-weight: 600;
-color: var(--primary-color);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary-color);
 }
 
 .metric-label {
-font-size: 0.875rem;
-color: #64748b;
-margin-top: 0.25rem;
+  font-size: 1rem;
+  color: #64748b;
+  margin-top: 0.5rem;
 }
 
 /* Button Styling */
@@ -713,15 +714,15 @@ padding: 10px 20px;
 border-radius: 5px;
 font-size: 16px;
 color: white;
-background-color: #4caf50; /* Default green for success */
+background-color: #4caf50;
 z-index: 1000;
-display: none; /* Hidden by default */
-animation: fadein 0.5s, fadeout 0.5s 2.5s; /* Fade effect */
+display: none;
+animation: fadein 0.5s, fadeout 0.5s 2.5s; 
 }
 
 .notification.error {
-background-color: #ffa07a; /* Light red */
-color: #800000; /* Dark red text for better contrast */
+background-color: #ffa07a; 
+color: #800000; 
 }
 
 @keyframes fadein {
@@ -744,4 +745,44 @@ to {
     opacity: 0;
     top: 0;
 }
+}
+
+#task3 .center-column {
+  margin: 0;
+  display: flex;
+  height: inherit;
+  font-family: Arial, sans-serif;
+  
+}
+
+#simulation {
+  border: 1px solid #ccc;
+  padding: 10px;
+  overflow: auto;
+  display: grid;
+  position: relative;
+  margin: auto;
+}
+
+.cell {
+  width: 20px;
+  height: 20px;
+  box-sizing: border-box;
+  border: none; /* Remove visible grid lines */
+}
+
+.obstacle{
+  background-color: black !important;
+}
+
+.tooltip{
+  position: absolute;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 12px;
+  pointer-events: none;
+  white-space: nowrap;
+  transform: translate(-50%, -120%);
 }
