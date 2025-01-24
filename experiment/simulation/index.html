@@ -51,18 +51,19 @@
 							<div class="column is-2-desktop is-4-tablet is-10-mobile">
 								<div class="box-question">
 									<div class="fill1">
-										<b>G(dB)</b> <input type="number" id="G">
+										G(dB) <input type="number" id="G">
 									</div>
 									<div class="fill1">
-										<b>fc(in MHz)</b> <input type="number" id="fc" step="0.1">
+										fc(in MHz) <input type="number" id="fc" step="0.1">
 									</div>
 									<div class="fill1">
-										<b>Ht (meters)</b> <input type="number" id="tx-height" min="1" max="150" value="10" step="1">
+										<label for="tx-height">Ht (meters)</label>
+										<input type="number" id="tx-height" min="1" max="150" value="10" step="1">
 									</div>
 									<div class="fill1">
-										<b>Hr(meters)</b> <input type="number" id="rx-height" min="1" max="150" value="10" step="1">
+										<label for="rx-height">Hr(meters)</label>
+										<input type="number" id="rx-height" min="1" max="150" value="10" step="1">
 									</div>
-								</div>
 									
 								</div>
 								
@@ -94,10 +95,10 @@
 					</div>
 					
 					<div class="right-column box">
-							<div class="column is-3-desktop is-10-tablet is-5-mobile">
+						<div class="column is-3-desktop is-10-tablet is-5-mobile">
+							<div class="box-question">
+								<div class="bold-text">Observations</div>
 
-								<b>Observations</b>
-						     <hr>
 									<div class="metrics">
 										<div class="metric-card" >
 											<div class="metric-value"><span id="distance">0</span> m</div>
@@ -108,6 +109,9 @@
 											<div class="metric-label">Path Loss</div>
 										</div>
 									</div>
+								
+							
+							</div>
 						</div>
 					</div>
 				</div>
