@@ -20,7 +20,7 @@
 			<div class="tab">
 				<button class="tablinks" onclick="openPart(event, 'task1')" , id="default">Pathloss</button>
 				<button class="tablinks" onclick="openPart(event, 'task2')">shadowing</button>
-				<!-- <button class="tablinks" onclick="openPart(event, 'task3')">Pathloss and shadow</button> -->
+				<button class="tablinks" onclick="openPart(event, 'task3')">Pathloss and shadow</button>
 			</div>
 		</div>
 	</div>
@@ -239,7 +239,74 @@
 
 	</section>
 	</div>
-
+    <div id="task3" class="tabcontent">
+        <section class="fre" id="TASK3">
+            <div class="max-width">
+                <h2 class="title">Shadowing Experiment</h2>
+                <div class="columns is-centered">
+                    <div class="v-collapsible-instruction-container v-instruction-container" style="margin-top: 2%;">
+                        <div class="v-collapsible is-size-5">Instructions</div>
+                        <div class="v-content" style="text-align: left; padding-left: 10%; padding-right: 10%;">
+                            <h3> <b> To understand the shadowing effects, follow these steps: </b> </h3>
+                            <br>
+                            <h3>
+                                <ol>
+                                    <li> Click on the grid to place obstacles. </li>
+                                </ol>
+                            </h3>
+                            <br>
+                        </div>
+                    </div>
+                </div>
+                <div class="columns-container">
+                    <div class="left-column box">
+                        <div class="columns is-centered is-flex-direction-row is-flex-wrap-wrap is-align-content-start" style="margin-top: 1.5%;">
+                            <div class="column is-12">
+                                <div class="box-question" style="margin-top: 2%; margin-right: 2%;">
+                                    <div id="inputs" class="p-3">
+                                        <h3><b>Inputs</b></h3>
+                                        <label for="setting">Environment:</label>
+                                        <select id="setting">
+                                            <option value="urban">Urban</option>
+                                            <option value="rural">Rural</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="center-column box">
+                     
+                            
+                                <div id="simulation"></div>
+                         
+                       
+                    </div>
+                    <div class="right-column box">
+                        <div class="column is-3-desktop is-10-tablet is-5-mobile">
+                            <div class="box-question">
+                                <div id="outputs"></div>
+                                    <h3><b>Outputs</b></h3>
+                                    <br>
+                                    <table class="table is-fullwidth">
+                                        <thead>
+                                            
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              
+                                                <td id="output-info">N/A</td>
+                                            </tr>
+                                          
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </section>
+            </div>
 	<script src="./js/main.js"></script>
 	<script src="https://cdn.jsdelivr.net/gh/virtual-labs/virtual-style@0.0.8-b/js/script.js"></script>
 
