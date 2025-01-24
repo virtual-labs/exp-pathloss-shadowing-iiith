@@ -10,7 +10,9 @@ Pathloss is a measure of signal attenuation along its path from the $T_{x}$ and 
 
 Mathematically, linear pathloss is defined as the ratio of the transmit power to received power given as
 
-     PL= \frac{P_{t}}{P_{r}} 
+katex.render(String.raw`PL= \frac{P_{t}}{P_{r}} `, element, {
+    throwOnError: false
+});
 
      PL(\text{in dB})  = 10 \log _{10} \frac{P_{t}}{P_{r}}
 
