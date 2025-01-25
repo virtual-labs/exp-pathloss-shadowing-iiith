@@ -11,15 +11,7 @@ function openPart(evt, name){
     document.getElementById(name).style.display = "block";
     evt.currentTarget.className += " active";
 
-    // Initialize task3 simulation if task3 tab is active
-    if (name === 'task1') {
-        initializeTask1Simulation();
-    }
-    if (name === 'task3') {
-        initializeTask3Simulation();
-    }
 }
-
 function startup() {
     document.getElementById("default").click();
 }
@@ -27,8 +19,12 @@ function startup() {
 window.onload = startup;
 
 
-//______________________________________________________________________________________________________________________________
+initializeTask3Simulation();
+initializeTask1Simulation();
 
+
+//______________________________________________________________________________________________________________________________
+function initializeTask1Simulation(){
 const slider = document.getElementById('distance-slider');
 const transmitter = document.getElementById('transmitter');
 const receiver = document.getElementById('receiver');
@@ -346,7 +342,7 @@ rxHeightInput.addEventListener('input', updateAntennaHeights);
 registerBtn.addEventListener('click', registerValues);
 plotBtn.addEventListener('click', plotGraph);
 updatePathLoss();
-
+}
 
 
 
@@ -363,13 +359,9 @@ function initializeTask3Simulation() {
     const gridSize = 20;
     const rows = 31;
     const cols = 31; 
-    const transmitter = { x: 15, y: 15 }; // Transmitter position (grid coordinates)
+    const transmitr= { x: 15, y: 15 }; // Transmitter position (grid coordinates)
 
     const simulationArea = document.getElementById("simulation");
-    if (!simulationArea) {
-        console.error("Simulation area not found");
-        return;
-    }
     simulationArea.style.gridTemplateRows = `repeat(${rows}, ${gridSize}px)`;
     simulationArea.style.gridTemplateColumns = `repeat(${cols}, ${gridSize}px)`;
 
@@ -388,7 +380,7 @@ function initializeTask3Simulation() {
             cell.classList.add("cell");
 
             // Calculate distance from transmitter
-            const distance = Math.sqrt((col - transmitter.x) ** 2 + (row - transmitter.y) ** 2);
+            const distance = Math.sqrt((col - transmitr.x) ** 2 + (row - transmitr.y) ** 2);
 
             // Compute pathloss value (example formula)
             const pathloss = 20 * Math.log10(distance + 1); // Adding 1 to avoid log(0)
@@ -411,14 +403,14 @@ function initializeTask3Simulation() {
     function isPointShadowed(x, y, obstacleX, obstacleY) {
         // Vector from transmitter to obstacle
         const vectToObstacle = {
-            x: obstacleX - transmitter.x,
-            y: obstacleY - transmitter.y
+            x: obstacleX - transmitr.x,
+            y: obstacleY - transmitr.y
         };
         
         // Vector from transmitter to point
         const vectToPoint = {
-            x: x - transmitter.x,
-            y: y - transmitter.y
+            x: x - transmitr.x,
+            y: y - transmitr.y
         };
         
         // Distance from transmitter to obstacle and point
@@ -501,43 +493,43 @@ function initializeTask3Simulation() {
     }
 
     // Update pathloss values when obstacles are placed
-    function updatePloss() {
-        // Find all obstacles
-        const obstacles = [];
-        let totalPathloss = 0;
-        let cellCount = 0;
+function updatePathloss() {
+// Find all obstacles
+const obstacles = [];
+let totalPathloss = 0;
+let cellCount = 0;
 
-        for (let row = 0; row < rows; row++) {
-            for (let col = 0; col < cols; col++) {
-                if (cells[row][col].element.classList.contains("obstacle")) {
-                    obstacles.push({ x: col, y: row });
-                }
-            }
+for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+        if (cells[row][col].element.classList.contains("obstacle")) {
+            obstacles.push({ x: col, y: row });
         }
-
-        // Update all cells and calculate average pathloss
-        for (let row = 0; row < rows; row++) {
-            for (let col = 0; col < cols; col++) {
-                const cell = updateCellPathloss(row, col, obstacles);
-                
-                if (!cell.element.classList.contains("obstacle")) {
-                    totalPathloss += cell.currentPathloss;
-                    cellCount++;
-                }
-            }
-        }
-
-        // Update average pathloss in output section
-        const averagePathloss = totalPathloss / cellCount;
-        document.getElementById("output-info").textContent = `Average Pathloss: ${averagePathloss.toFixed(2)}`;
     }
+}
+
+// Update all cells and calculate average pathloss
+for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+        const cell = updateCellPathloss(row, col, obstacles);
+        
+        if (!cell.element.classList.contains("obstacle")) {
+            totalPathloss += cell.currentPathloss;
+            cellCount++;
+        }
+    }
+}
+
+// Update average pathloss in output section
+const averagePathloss = totalPathloss / cellCount;
+document.getElementById("output-info").textContent = `Average Pathloss: ${averagePathloss.toFixed(2)}`;
+}
 
     // Place obstacles
     simulationArea.addEventListener("click", (e) => {
         const cell = e.target;
         if (cell && cell.classList.contains("cell")) {
             cell.classList.toggle("obstacle");
-            updatePloss();
+            updatePathloss();
             
             // Update tooltip immediately if it's visible
             const hoveredCell = document.querySelector(".cell:hover");
@@ -569,13 +561,16 @@ function initializeTask3Simulation() {
         const cell = e.target;
         if (cell && cell.classList.contains("cell")) {
             updateTooltip(cell);
-            tooltip.style.left = `${e.pageX}px`;
-            tooltip.style.top = `${e.pageY}px`;
+            tooltip.style.left = `${e.pageX + 10}px`; // Offset to avoid cursor overlap
+            tooltip.style.top = `${e.pageY + 10}px`; // Offset to avoid cursor overlap
             tooltip.style.display = "block";
+        } else {
+            tooltip.style.display = "none";
         }
     });
 
     simulationArea.addEventListener("mouseleave", () => {
         tooltip.style.display = "none";
     });
+
 }
