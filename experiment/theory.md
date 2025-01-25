@@ -1,3 +1,4 @@
+
 Link budget is an important aspect of wireless communication systems design. It accounts for all gains and losses. Two major factors that cause a variation in the received signal(loss) are Pathloss and shadowing. Thus, an accurate characterization of these two effects is crucial for planning the link budget. Let us now understand these effects in detail.
 
 ## Pathloss
@@ -15,11 +16,19 @@ PL= \frac{P_{t}}{P_{r}}
 \end{aligned}
 $$
 
-     PL(\text{in dB})  = 10 \log _{10} \frac{P_{t}}{P_{r}}
+$$
+\begin{aligned}
+PL(\text{in dB})  = 10 \log _{10} \frac{P_{t}}{P_{r}}
+\end{aligned}
+$$
 
 From the FrIis free-space transmission equation, w.k.t
 
-    PL(\text{in dB}) = 10 \log _{10}\left(\frac{4 \pi d}{\lambda \sqrt{G}}\right)^{2},
+$$
+\begin{aligned}
+PL(\text{in dB}) = 10 \log _{10}\left(\frac{4 \pi d}{\lambda \sqrt{G}}\right)^{2},
+\end{aligned}
+$$
 
 where $ G_{t} G_{r}=\sqrt{G}$ is the combined antenna gain.
 
@@ -28,10 +37,18 @@ We can clearly see that the intuitive understanding is in coherence with the der
 ## Pathloss with shadowing
 Now, after clearly understanding the concept of pathloss, have you wondered if the pathloss in any direction of the same distance is equal? Not necessarily. This gives rise to the effect of shadowing! Not just the distance between the $T_{x}$ and $R_{x}$, but also the surrounding environment b/w them leads to an attenuation of the received signal power. Shadowing is caused by the obstacles between the $T_{x}$ and $R_{x}$ that lead to absorption, reflection, and scattering etc of the signal. The attenuation due to this is a random value. This leads to an additional term in the pathloss equation as follows
 
-    PL(\text{in dB})= 10 \log _{10}\left(\frac{4 \pi d}{\lambda \sqrt{G}}\right)^{2}+\psi
+$$
+\begin{aligned}
+PL(\text{in dB})= 10 \log _{10}\left(\frac{4 \pi d}{\lambda \sqrt{G}}\right)^{2}+\psi
+\end{aligned}
+$$
 
 The most common model for this additional attenuation, $\psi$ is log-normal shadowing. This model has been empirically confirmed to accurately capture the variation in received signal power in both outdoor and indoor radio propagation environments.
 
-     P(\psi)=\frac{\varepsilon}{\sqrt{2 \pi} \sigma_{\psi_{d B}} \psi} \cdot \exp \left[\frac{-\left(10 \log_{10} \psi-\mu_{\psi d B}\right)^{2}}{2 \sigma_{d}^{2}}\right],
+$$
+\begin{aligned}
+P(\psi)=\frac{\varepsilon}{\sqrt{2 \pi} \sigma_{\psi_{d B}} \psi} \cdot \exp \left[\frac{-\left(10 \log_{10} \psi-\mu_{\psi d B}\right)^{2}}{2 \sigma_{d}^{2}}\right],
+\end{aligned}
+$$
 
 where $\xi=\frac{10}{\ln 10}$, $\mu_{\psi_{\text{in dB}}}$ is the mean and $\sigma_{\psi_{\text{in dB}}}^{2}$ is the variance.
