@@ -452,7 +452,7 @@ th{
   border-radius: 10px;
   padding: 20px;
   height: 300px;
-  min-width: 200px; /* Set minimum width */
+  min-width: 360px; /* Set minimum width */
 }
 
 /* Add a container to ensure proper layout */
