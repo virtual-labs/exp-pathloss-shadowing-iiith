@@ -17,10 +17,10 @@ function startup() {
 }
 
 window.onload = startup;
-
-
 initializeTask3Simulation();
 initializeTask1Simulation();
+
+
 
 
 //______________________________________________________________________________________________________________________________
@@ -354,223 +354,245 @@ updatePathLoss();
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~task_3~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-// Function to initialize task3 simulation
-function initializeTask3Simulation() {
-    const gridSize = 20;
-    const rows = 31;
-    const cols = 31; 
-    const transmitr= { x: 15, y: 15 }; // Transmitter position (grid coordinates)
+function initializeTask3Simulation(){
+const kInput = document.getElementById('k_val');
+const gammaInput = document.getElementById('gamma_val');
+const d0Input = document.getElementById('d0_val');
+const distanceSlider = document.getElementById('current_distance_slider');
+const distanceDisplay = document.getElementById('current_distance_val');
+const angleSlider = document.getElementById('receiver_angle_slider');
+const angleDisplay = document.getElementById('receiver_angle_val');
+const randomizeBtn = document.getElementById('randomize_obstacles_btn');
+const recordBtn = document.getElementById('record_data_btn');
+const generateGraphBtn = document.getElementById('generate_graph_btn');
+const resetBtn = document.getElementById('reset_session_btn');
+const recordCountDisplay = document.getElementById('record_count_display');
 
-    const simulationArea = document.getElementById("simulation");
-    simulationArea.style.gridTemplateRows = `repeat(${rows}, ${gridSize}px)`;
-    simulationArea.style.gridTemplateColumns = `repeat(${cols}, ${gridSize}px)`;
+const simCanvas = document.getElementById('simulationCanvas');
+const simCtx = simCanvas.getContext('2d');
+const graphCanvas = document.getElementById('pathlossGraph');
+const graphPlaceholder = document.getElementById('graph_placeholder');
 
-    const tooltip = document.createElement("div");
-    tooltip.className = "tooltip";
-    tooltip.style.display = "none";
-    document.body.appendChild(tooltip);
+const outStatus = document.getElementById('out_status');
+const statusIndicator = document.getElementById('status_indicator');
+const outTotalPl = document.getElementById('out_total_pl_val');
+const outPrPt = document.getElementById('out_pr_pt_val');
 
-    const cells = []; // Store cells for easy manipulation
+let pathlossChart;
+let obstacles = [];
+let currentK, currentGamma, currentD0, currentRxDistance_m, currentRxAngleRad;
+let recordedData = [];
+const MIN_RECORDINGS = 10;
+const MAX_RECORDINGS = 25;
 
-    // Generate grid with pathloss values
-    for (let row = 0; row < rows; row++) {
-        cells[row] = [];
-        for (let col = 0; col < cols; col++) {
-            const cell = document.createElement("div");
-            cell.classList.add("cell");
+// Simulation Constants
+const canvasWidth = simCanvas.width;
+const canvasHeight = simCanvas.height;
+const txPos_px = { x: canvasWidth / 2, y: canvasHeight / 2 };
+const maxCanvasDisplayRadius_px = Math.min(canvasWidth, canvasHeight) / 2 * 0.85;
+let worldScale_pxPerMeter;
 
-            // Calculate distance from transmitter
-            const distance = Math.sqrt((col - transmitr.x) ** 2 + (row - transmitr.y) ** 2);
+function init() {
+    setupEventListeners();
+    initializeChart();
+    readAllInputs();
+    calculateWorldScale();
+    placeObstacles();
+    updateSimulation();
+    updateUIState();
+}
 
-            // Compute pathloss value (example formula)
-            const pathloss = 20 * Math.log10(distance + 1); // Adding 1 to avoid log(0)
+function setupEventListeners() {
+    [kInput, gammaInput, d0Input, distanceSlider, angleSlider].forEach(el => {
+        el.addEventListener('input', () => { readAllInputs(); updateSimulation(); });
+    });
+    randomizeBtn.addEventListener('click', () => {
+        readAllInputs(); 
+        placeObstacles();
+        resetSession();
+        updateSimulation();
+    });
+    recordBtn.addEventListener('click', recordDataPoint);
+    generateGraphBtn.addEventListener('click', generateGraph);
+    resetBtn.addEventListener('click', resetSession);
+}
 
-            // Set background color based on pathloss value (heatmap effect)
-            const intensity = Math.min(255, Math.max(0, 255 - pathloss * 5));
-            cell.style.backgroundColor = `rgb(${255 - intensity}, ${intensity}, ${intensity})`;
+function readAllInputs() {
+    currentK = parseFloat(kInput.value);
+    currentGamma = parseFloat(gammaInput.value);
+    currentD0 = parseFloat(d0Input.value);
+    currentRxDistance_m = parseFloat(distanceSlider.value);
+    distanceDisplay.textContent = currentRxDistance_m.toFixed(0);
+    currentRxAngleRad = parseFloat(angleSlider.value) * Math.PI / 180;
+    angleDisplay.textContent = (currentRxAngleRad * 180 / Math.PI).toFixed(0);
+}
 
-            simulationArea.appendChild(cell);
-            cells[row][col] = { 
-                element: cell, 
-                basePathloss: pathloss, 
-                currentPathloss: pathloss,
-                shadows: [] // Store individual shadow contributions
-            };
-        }
+function updateUIState() {
+    recordCountDisplay.textContent = `${recordedData.length} / ${MAX_RECORDINGS}`;
+    recordBtn.disabled = recordedData.length >= MAX_RECORDINGS;
+    generateGraphBtn.disabled = recordedData.length < MIN_RECORDINGS;
+}
+
+function recordDataPoint() {
+    if (recordedData.length >= MAX_RECORDINGS) return;
+    readAllInputs();
+    const { prPtDb } = calculateCurrentSignal();
+    recordedData.push({ x: currentRxDistance_m, y: prPtDb });
+    updateUIState();
+}
+
+function generateGraph() {
+    graphPlaceholder.style.display = 'none';
+    graphCanvas.style.display = 'block';
+
+    // CHANGE: Sort recorded data by distance (x values) in ascending order
+    const sortedRecordedData = [...recordedData].sort((a, b) => a.x - b.x);
+    pathlossChart.data.datasets[1].data = sortedRecordedData;
+
+    const meanPrPtData = [];
+    const minD = parseInt(distanceSlider.min);
+    const maxD = parseInt(distanceSlider.max);
+    for (let dist = minD; dist <= maxD; dist += 5) {
+        const meanPl = calculateMeanPathloss(dist, currentK, currentGamma, currentD0);
+        meanPrPtData.push({ x: dist, y: -meanPl });
     }
+    pathlossChart.data.datasets[0].data = meanPrPtData;
+    pathlossChart.update();
+}
 
-    // Helper function to check if a point is shadowed by an obstacle
-    function isPointShadowed(x, y, obstacleX, obstacleY) {
-        // Vector from transmitter to obstacle
-        const vectToObstacle = {
-            x: obstacleX - transmitr.x,
-            y: obstacleY - transmitr.y
-        };
-        
-        // Vector from transmitter to point
-        const vectToPoint = {
-            x: x - transmitr.x,
-            y: y - transmitr.y
-        };
-        
-        // Distance from transmitter to obstacle and point
-        const distToObstacle = Math.sqrt(vectToObstacle.x ** 2 + vectToObstacle.y ** 2);
-        const distToPoint = Math.sqrt(vectToPoint.x ** 2 + vectToPoint.y ** 2);
-        
-        // If point is closer to transmitter than obstacle, it's not shadowed
-        if (distToPoint <= distToObstacle) {
-            return { isShadowed: false, strength: 0 };
-        }
-        
-        // Calculate dot product
-        const dotProduct = vectToObstacle.x * vectToPoint.x + vectToObstacle.y * vectToPoint.y;
-        const cosAngle = dotProduct / (distToObstacle * distToPoint);
-        
-        // Calculate shadow strength based on alignment
-        if (cosAngle > 0.95) { // About 18 degrees
-            const strength = (cosAngle - 0.95) / 0.05; // Normalize to 0-1
-            return { 
-                isShadowed: true, 
-                strength: strength,
-                distance: distToPoint - distToObstacle // Distance traveled in shadow
-            };
-        }
-        
-        return { isShadowed: false, strength: 0 };
+function resetSession() {
+    recordedData = [];
+    if (pathlossChart) {
+        pathlossChart.data.datasets[1].data = [];
+        pathlossChart.data.datasets[0].data = [];
+        pathlossChart.update();
     }
+    graphPlaceholder.style.display = 'flex';
+    graphCanvas.style.display = 'none';
+    updateUIState();
+}
 
-    // Function to combine multiple shadow effects
-    function combineShadowEffects(shadows) {
-        if (shadows.length === 0) return 0;
-        
-        // Sort shadows by strength
-        shadows.sort((a, b) => b.strength - a.strength);
-        
-        // Primary shadow effect (strongest shadow)
-        let totalAttenuation = shadows[0].strength * 2;
-        
-        // Additional shadows contribute logarithmically less
-        for (let i = 1; i < shadows.length; i++) {
-            const additionalAttenuation = (shadows[i].strength * 2) / (i + 1);
-            totalAttenuation += additionalAttenuation;
-        }
-        
-        // Scale attenuation based on distance traveled in shadow
-        shadows.forEach(shadow => {
-            const distanceScale = Math.log10(shadow.distance + 1) / 2;
-            totalAttenuation *= (1 + distanceScale);
-        });
-        
-        return totalAttenuation;
-    }
+function calculateCurrentSignal() {
+    const currentRxRadius_px = currentRxDistance_m * worldScale_pxPerMeter;
+    const rxPos_px = {
+        x: txPos_px.x + currentRxRadius_px * Math.cos(currentRxAngleRad),
+        y: txPos_px.y + currentRxRadius_px * Math.sin(currentRxAngleRad)
+    };
+    const meanPlDb = calculateMeanPathloss(currentRxDistance_m, currentK, currentGamma, currentD0);
+    const { shadowingDb, isOccluded } = calculateShadowingAtPosition(rxPos_px);
+    const totalPlDb = meanPlDb + shadowingDb;
+    const prPtDb = -totalPlDb;
+    return { totalPlDb, prPtDb, isOccluded };
+}
 
-    // Function to update cell pathloss and return the new value
-    function updateCellPathloss(row, col, obstacles) {
-        const cell = cells[row][col];
-        
-        if (!cell.element.classList.contains("obstacle")) {
-            // Reset shadows array
-            cell.shadows = [];
-            
-            // Check shadows from all obstacles
-            for (const obstacle of obstacles) {
-                const shadowInfo = isPointShadowed(col, row, obstacle.x, obstacle.y);
-                if (shadowInfo.isShadowed) {
-                    cell.shadows.push(shadowInfo);
+function updateSimulation() {
+    const { totalPlDb, prPtDb, isOccluded } = calculateCurrentSignal();
+    outTotalPl.textContent = totalPlDb.toFixed(2);
+    outPrPt.textContent = prPtDb.toFixed(2);
+    outStatus.textContent = isOccluded ? "Occluded" : "Line of Sight";
+    statusIndicator.className = `status-indicator ${isOccluded ? 'status-occluded' : 'status-los'}`;
+    const currentRxRadius_px = currentRxDistance_m * worldScale_pxPerMeter;
+    const rxPos_px = {
+        x: txPos_px.x + currentRxRadius_px * Math.cos(currentRxAngleRad),
+        y: txPos_px.y + currentRxRadius_px * Math.sin(currentRxAngleRad)
+    };
+    drawSimulationCanvas(rxPos_px, currentRxRadius_px, isOccluded);
+}
+
+function initializeChart() {
+    pathlossChart = new Chart(graphCanvas, {
+        type: 'scatter',
+        data: {
+            datasets: [
+                { 
+                    label: 'Ideal Pathloss (No Shadowing)', data: [], borderColor: '#3498db',
+                    borderDash: [8, 4], type: 'line', fill: false, pointRadius: 0, borderWidth: 3,
+                },
+                {
+                    label: 'Recorded Pr/Pt (with Fading)', 
+                    data: [], 
+                    borderColor: '#e74c3c', 
+                    backgroundColor: '#e74c3c', 
+                    pointRadius: 6,
+                    borderWidth: 2,
+                    showLine: true,
+                    type: 'line'
+                }
+            ]
+        },
+        options: {
+            // CHANGE: Set responsive to true and maintainAspectRatio to false
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: {
+                padding: 20  // Increase padding
+            },
+            plugins: { legend: { labels: { usePointStyle: true, font: { size: 12 } } } },
+            scales: {
+                x: {
+                    type: 'linear',
+                    title: { display: true, text: 'Distance (meters)', font: { size: 16, weight: '600' } },
+                    min: parseInt(distanceSlider.min), max: parseInt(distanceSlider.max)
+                },
+                y: { 
+                    title: { display: true, text: 'Pr/Pt (dB)', font: { size: 16, weight: '600' } },
+                    suggestedMax: -50,
+                    suggestedMin: -160
                 }
             }
-            
-            // Calculate combined shadow effect
-            const shadowAttenuation = combineShadowEffects(cell.shadows);
-            cell.currentPathloss = cell.basePathloss + shadowAttenuation;
-
-            // Update cell color based on new pathloss
-            const intensity = Math.min(255, Math.max(0, 255 - cell.currentPathloss * 5));
-            cell.element.style.backgroundColor = `rgb(${255 - intensity}, ${intensity}, ${intensity})`;
-        }
-        
-        return cell;
-    }
-
-    // Update pathloss values when obstacles are placed
-function updatePathloss() {
-// Find all obstacles
-const obstacles = [];
-let totalPathloss = 0;
-let cellCount = 0;
-
-for (let row = 0; row < rows; row++) {
-    for (let col = 0; col < cols; col++) {
-        if (cells[row][col].element.classList.contains("obstacle")) {
-            obstacles.push({ x: col, y: row });
-        }
-    }
-}
-
-// Update all cells and calculate average pathloss
-for (let row = 0; row < rows; row++) {
-    for (let col = 0; col < cols; col++) {
-        const cell = updateCellPathloss(row, col, obstacles);
-        
-        if (!cell.element.classList.contains("obstacle")) {
-            totalPathloss += cell.currentPathloss;
-            cellCount++;
-        }
-    }
-}
-
-// Update average pathloss in output section
-const averagePathloss = totalPathloss / cellCount;
-document.getElementById("output-info").textContent = `Average Pathloss: ${averagePathloss.toFixed(2)}`;
-}
-
-    // Place obstacles
-    simulationArea.addEventListener("click", (e) => {
-        const cell = e.target;
-        if (cell && cell.classList.contains("cell")) {
-            cell.classList.toggle("obstacle");
-            updatePathloss();
-            
-            // Update tooltip immediately if it's visible
-            const hoveredCell = document.querySelector(".cell:hover");
-            if (hoveredCell) {
-                updateTooltip(hoveredCell);
-            }
         }
     });
+}        
 
-    // Function to update tooltip content
-    function updateTooltip(cell) {
-        const row = Math.floor(Array.from(simulationArea.children).indexOf(cell) / cols);
-        const col = Array.from(simulationArea.children).indexOf(cell) % cols;
-        const cellData = cells[row][col];
-        
-        let tooltipText = `Base Pathloss: ${cellData.basePathloss.toFixed(2)}`;
-        if (cellData.shadows && cellData.shadows.length > 0) {
-            tooltipText += `\nShadows: ${cellData.shadows.length}`;
-            tooltipText += `\nShadow Attenuation: ${(cellData.currentPathloss - cellData.basePathloss).toFixed(2)}`;
-        }
-        tooltipText += `\nTotal Pathloss: ${cellData.currentPathloss.toFixed(2)}`;
-        
-        tooltip.textContent = tooltipText;
-        tooltip.style.whiteSpace = "pre-line";
+// --- All calculation and drawing functions are included below without change ---
+function calculateWorldScale() { worldScale_pxPerMeter = maxCanvasDisplayRadius_px / parseFloat(distanceSlider.max); }
+function placeObstacles() {
+    obstacles = []; const densityPerKm2 = 500; const maxSimDistance_m = parseFloat(distanceSlider.max);
+    const areaKm2 = Math.PI * (maxSimDistance_m / 1000) ** 2; const numObs = Math.round(densityPerKm2 * areaKm2);
+    for (let i = 0; i < numObs; i++) {
+        const obsDistFromTx_m = Math.sqrt(Math.random()) * maxSimDistance_m; const obsAngleRad = Math.random() * 2 * Math.PI;
+        const obsRadius_m = Math.random() * 8 * 0.6 + 8 * 0.2; const obsX_m = obsDistFromTx_m * Math.cos(obsAngleRad);
+        const obsY_m = obsDistFromTx_m * Math.sin(obsAngleRad); const attenuation = Math.max(0.5, 8 + (Math.random() - 0.5) * 2 * 5);
+        obstacles.push({
+            x_m: obsX_m, y_m: obsY_m, radius_m: obsRadius_m, attenuationDb: attenuation,
+            x_px: txPos_px.x + obsX_m * worldScale_pxPerMeter, y_px: txPos_px.y + obsY_m * worldScale_pxPerMeter,
+            radius_px: Math.max(2, obsRadius_m * worldScale_pxPerMeter), color: `hsl(${30 + (attenuation / 20) * 30}, 70%, ${60 - (attenuation / 20) * 20}%)`
+        });
     }
-
-    // Enhanced tooltip display with shadow information
-    simulationArea.addEventListener("mousemove", (e) => {
-        const cell = e.target;
-        if (cell && cell.classList.contains("cell")) {
-            updateTooltip(cell);
-            tooltip.style.left = `${e.pageX + 10}px`; // Offset to avoid cursor overlap
-            tooltip.style.top = `${e.pageY + 10}px`; // Offset to avoid cursor overlap
-            tooltip.style.display = "block";
-        } else {
-            tooltip.style.display = "none";
+}
+function calculateShadowingAtPosition(rxPos_px) {
+    let totalShadowingDb = 0; let occluded = false;
+    for (const obs of obstacles) {
+        const obsCenter_px = { x: obs.x_px, y: obs.y_px };
+        if (isLineSegmentIntersectingCircle(txPos_px, rxPos_px, obsCenter_px, obs.radius_px ** 2)) {
+            totalShadowingDb += obs.attenuationDb; occluded = true;
         }
+    }
+    totalShadowingDb += (Math.random() - 0.5) * 8; return { shadowingDb: totalShadowingDb, isOccluded: occluded };
+}
+function calculateMeanPathloss(distance, K, gamma, d0) {
+    if (distance <= 0) distance = 0.1; if (d0 <= 0) d0 = 0.1;
+    return (distance < d0) ? K : K + 10 * gamma * Math.log10(distance / d0);
+}
+function isLineSegmentIntersectingCircle(P1, P2, C, R_sq) {
+    let dX = P2.x - P1.x; let dY = P2.y - P1.y; if ((dX === 0) && (dY === 0)) return false;
+    let t = ((C.x - P1.x) * dX + (C.y - P1.y) * dY) / (dX * dX + dY * dY); t = Math.max(0, Math.min(1, t));
+    let closestX = P1.x + t * dX; let closestY = P1.y + t * dY;
+    return ((C.x - closestX) ** 2 + (C.y - closestY) ** 2) <= R_sq;
+}
+function drawSimulationCanvas(rxPos_px, currentRxRadius_px, isOccluded) {
+    simCtx.clearRect(0, 0, canvasWidth, canvasHeight); simCtx.strokeStyle = 'rgba(74, 105, 189, 0.3)'; simCtx.lineWidth = 1; simCtx.setLineDash([3, 3]);
+    for (let i = 50; i <= 200; i += 50) {
+        const r = i * worldScale_pxPerMeter; simCtx.beginPath(); simCtx.arc(txPos_px.x, txPos_px.y, r, 0, 2 * Math.PI); simCtx.stroke();
+    }
+    simCtx.setLineDash([]); simCtx.beginPath(); simCtx.arc(txPos_px.x, txPos_px.y, currentRxRadius_px, 0, 2 * Math.PI);
+    simCtx.strokeStyle = isOccluded ? 'rgba(255, 87, 34, 0.8)' : 'rgba(76, 175, 80, 0.8)'; simCtx.lineWidth = 2; simCtx.setLineDash([5, 5]); simCtx.stroke(); simCtx.setLineDash([]);
+    obstacles.forEach(obs => {
+        simCtx.fillStyle = obs.color; simCtx.fillRect(obs.x_px - obs.radius_px, obs.y_px - obs.radius_px, obs.radius_px * 2, obs.radius_px * 2);
     });
+    simCtx.beginPath(); simCtx.moveTo(txPos_px.x, txPos_px.y); simCtx.lineTo(rxPos_px.x, rxPos_px.y);
+    simCtx.strokeStyle = isOccluded ? '#ff5722' : '#4caf50'; simCtx.lineWidth = 3; simCtx.stroke();
+}
 
-    simulationArea.addEventListener("mouseleave", () => {
-        tooltip.style.display = "none";
-    });
-
+document.addEventListener('DOMContentLoaded', init);
 }
