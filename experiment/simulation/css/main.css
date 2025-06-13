@@ -792,13 +792,12 @@ to {
 
 .left-column3 {
   flex: 1; /* Reduced from 4 to make it smaller */
-  margin-right: 10px;
+  margin-right: 8px;
   background-color: #f0f0f0;
   border: 2px solid #98CB3B;
   border-radius: 10px;
   padding: 20px;
   min-height: 800px;
-  min-width: 400px; /* Set minimum width */
 }
 
 .center-column3 {
@@ -812,12 +811,11 @@ to {
 
 .right-column3 {
   flex: 1; /* Reduced from 3 to make it smaller */
-  margin-left: 10px;
+  margin-left: 8px;
   background-color: #f0f0f0;
   border: 2px solid #98CB3B;
   border-radius: 10px;
-  padding: 20px;
-  height: 600px;
+  max-height: 600px;
 }
 
 .input-group { 
@@ -1036,6 +1034,7 @@ button.secondary:hover:not(:disabled) {
   border: 3px dashed #e8ecf0;
   font-size: 1.1em;
   font-weight: 500;
+  width: inherit;
 }
 
 @media (max-width: 768px) {
