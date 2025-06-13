@@ -156,7 +156,8 @@
 							<div class="column is-2-desktop is-4-tablet is-10-mobile">
 								<div class="box-question">
 									<div class="fill1">
-										G(dB) <input type="number" id="G">
+										<label for="G"><b>G (dB)</b></label>
+										<input type="number" id="G">
 									</div>
 									<div class="fill1">
 										fc(in MHz) <input type="number" id="fc" step="0.1">
@@ -326,7 +327,7 @@
                         </div>
                     </div>
                     <div class="center-column3 box">
-											<h3>Analysis Results</h3>
+											<h3>Simulation</h3>
 														<div class="simulation-container">
 																<canvas id="simulationCanvas" width="420" height="420"></canvas>
 																<div class="status-display">
@@ -340,7 +341,7 @@
                     </div>
                     <div class="right-column3 box">
                         <div class="column is-3-desktop is-10-tablet is-5-mobile">
-											
+													<h3>Results</h3>
 												
 																<div class="graph-container">
 																		<div id="graph_placeholder">Record at least 10 data points to generate the analysis graph</div>
