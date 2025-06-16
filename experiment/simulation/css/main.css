@@ -806,7 +806,7 @@ to {
   border: 2px solid #98CB3B;
   border-radius: 10px;
   padding: 20px;
-  height: 600px;
+  height: 700px;
 }
 
 .right-column3 {
@@ -950,7 +950,19 @@ to {
   gap: 12px;
   margin-bottom: 15px;
 }
-
+button { 
+  padding: 15px 20px; 
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white; 
+  border: none; 
+  border-radius: 10px; 
+  cursor: pointer; 
+  transition: all 0.3s ease;
+  font-size: 1em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
 .button-group.single {
   color: #c72525;
 }
@@ -1002,6 +1014,46 @@ button.secondary:hover:not(:disabled) {
   margin: 0 auto 20px auto;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
   display: block;
+}
+.simulation-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 15px;
+  padding: 10px;
+  width: 100%;
+  background: #f8f9fa;
+  border-radius: 10px;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9em;
+}
+.legend-icon {
+  width: 20px;
+  height: 20px;
+}
+.legend-swatch {
+  width: 15px;
+  height: 15px;
+  border: 1px solid #ccc;
+}
+.legend-line {
+  width: 20px;
+  height: 4px;
+  border-radius: 2px;
+}
+.obstacle-color {
+  background-color: hsl(40, 70%, 55%);
+}
+.los-color {
+  background-color: #27ae60;
+}
+.occluded-color {
+  background-color: #e74c3c;
 }
 
 /* Graph Panel */

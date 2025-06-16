@@ -355,244 +355,326 @@ updatePathLoss();
 
 
 function initializeTask3Simulation(){
-const kInput = document.getElementById('k_val');
-const gammaInput = document.getElementById('gamma_val');
-const d0Input = document.getElementById('d0_val');
-const distanceSlider = document.getElementById('current_distance_slider');
-const distanceDisplay = document.getElementById('current_distance_val');
-const angleSlider = document.getElementById('receiver_angle_slider');
-const angleDisplay = document.getElementById('receiver_angle_val');
-const randomizeBtn = document.getElementById('randomize_obstacles_btn');
-const recordBtn = document.getElementById('record_data_btn');
-const generateGraphBtn = document.getElementById('generate_graph_btn');
-const resetBtn = document.getElementById('reset_session_btn');
-const recordCountDisplay = document.getElementById('record_count_display');
+    const kInput = document.getElementById('k_val');
+    const gammaInput = document.getElementById('gamma_val');
+    const d0Input = document.getElementById('d0_val');
+    const densityInput = document.getElementById('obstacle_density_val');
+    const distanceSlider = document.getElementById('current_distance_slider');
+    const distanceDisplay = document.getElementById('current_distance_val');
+    const angleSlider = document.getElementById('receiver_angle_slider');
+    const angleDisplay = document.getElementById('receiver_angle_val');
+    const randomizeBtn = document.getElementById('randomize_obstacles_btn');
+    const recordBtn = document.getElementById('record_data_btn');
+    const generateGraphBtn = document.getElementById('generate_graph_btn');
+    const resetBtn = document.getElementById('reset_session_btn');
+    const recordCountDisplay = document.getElementById('record_count_display');
 
-const simCanvas = document.getElementById('simulationCanvas');
-const simCtx = simCanvas.getContext('2d');
-const graphCanvas = document.getElementById('pathlossGraph');
-const graphPlaceholder = document.getElementById('graph_placeholder');
+    const simCanvas = document.getElementById('simulationCanvas');
+    const simCtx = simCanvas.getContext('2d');
+    const graphCanvas = document.getElementById('pathlossGraph');
+    const graphPlaceholder = document.getElementById('graph_placeholder');
 
-const outStatus = document.getElementById('out_status');
-const statusIndicator = document.getElementById('status_indicator');
-const outTotalPl = document.getElementById('out_total_pl_val');
-const outPrPt = document.getElementById('out_pr_pt_val');
+    const outStatus = document.getElementById('out_status');
+    const statusIndicator = document.getElementById('status_indicator');
+    const outTotalPl = document.getElementById('out_total_pl_val');
+    const outPrPt = document.getElementById('out_pr_pt_val');
 
-let pathlossChart;
-let obstacles = [];
-let currentK, currentGamma, currentD0, currentRxDistance_m, currentRxAngleRad;
-let recordedData = [];
-const MIN_RECORDINGS = 10;
-const MAX_RECORDINGS = 25;
+    let pathlossChart;
+    let obstacles = [];
+    let currentK, currentGamma, currentD0, currentRxDistance_m, currentRxAngleRad;
+    let recordedData = [];
+    const MIN_RECORDINGS = 10;
+    const MAX_RECORDINGS = 25;
 
-// Simulation Constants
-const canvasWidth = simCanvas.width;
-const canvasHeight = simCanvas.height;
-const txPos_px = { x: canvasWidth / 2, y: canvasHeight / 2 };
-const maxCanvasDisplayRadius_px = Math.min(canvasWidth, canvasHeight) / 2 * 0.85;
-let worldScale_pxPerMeter;
+    // Simulation Constants
+    const canvasWidth = simCanvas.width;
+    const canvasHeight = simCanvas.height;
+    const txPos_px = { x: canvasWidth / 2, y: canvasHeight / 2 };
+    const maxCanvasDisplayRadius_px = Math.min(canvasWidth, canvasHeight) / 2 * 0.85;
+    let worldScale_pxPerMeter;
 
-function init() {
-    setupEventListeners();
-    initializeChart();
-    readAllInputs();
-    calculateWorldScale();
-    placeObstacles();
-    updateSimulation();
-    updateUIState();
-}
+    // CHANGE: Using Base64 encoded SVGs to fix rendering bug
+    const TX_ICON = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzY2N2VlYSI+PHBhdGggZD0iTTEyIDNsNCA0aC0zdjEwaC0yVjdIOFs0LTR6TTQgOWgzdjJINGMtMnptMCA0aDN2Mkg0di0yem0xNi00aC0zdjJoM3YtMnptMCA0aC0zdjJoM3YtMnoiLz48L3N2Zz4=';
+    const RX_ICON = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzY2N2VlYSI+PHBhdGggZD0iTTE2IDFIOEM2LjM0IDEgNSAyLjM0IDUgNHYxNmMwIDEuNjYgMS4zNCAzIDMgM2g4YzEuNjYgMCAzLTEuMzQgMy0zVjRjMC0xLjY2LTEuMzQtMy0zLTN6TTE0IDIxaC00di0xaDR2MXptMS4yNS0zSDguNzVWNGg2LjV2MTR6Ii8+PC9zdmc+';
+    
+    let txImage, rxImage;
+    const TX_IMG_SIZE = 38;
+    const RX_IMG_SIZE = 28;
 
-function setupEventListeners() {
-    [kInput, gammaInput, d0Input, distanceSlider, angleSlider].forEach(el => {
-        el.addEventListener('input', () => { readAllInputs(); updateSimulation(); });
-    });
-    randomizeBtn.addEventListener('click', () => {
-        readAllInputs(); 
-        placeObstacles();
-        resetSession();
-        updateSimulation();
-    });
-    recordBtn.addEventListener('click', recordDataPoint);
-    generateGraphBtn.addEventListener('click', generateGraph);
-    resetBtn.addEventListener('click', resetSession);
-}
-
-function readAllInputs() {
-    currentK = parseFloat(kInput.value);
-    currentGamma = parseFloat(gammaInput.value);
-    currentD0 = parseFloat(d0Input.value);
-    currentRxDistance_m = parseFloat(distanceSlider.value);
-    distanceDisplay.textContent = currentRxDistance_m.toFixed(0);
-    currentRxAngleRad = parseFloat(angleSlider.value) * Math.PI / 180;
-    angleDisplay.textContent = (currentRxAngleRad * 180 / Math.PI).toFixed(0);
-}
-
-function updateUIState() {
-    recordCountDisplay.textContent = `${recordedData.length} / ${MAX_RECORDINGS}`;
-    recordBtn.disabled = recordedData.length >= MAX_RECORDINGS;
-    generateGraphBtn.disabled = recordedData.length < MIN_RECORDINGS;
-}
-
-function recordDataPoint() {
-    if (recordedData.length >= MAX_RECORDINGS) return;
-    readAllInputs();
-    const { prPtDb } = calculateCurrentSignal();
-    recordedData.push({ x: currentRxDistance_m, y: prPtDb });
-    updateUIState();
-}
-
-function generateGraph() {
-    graphPlaceholder.style.display = 'none';
-    graphCanvas.style.display = 'block';
-
-    // CHANGE: Sort recorded data by distance (x values) in ascending order
-    const sortedRecordedData = [...recordedData].sort((a, b) => a.x - b.x);
-    pathlossChart.data.datasets[1].data = sortedRecordedData;
-
-    const meanPrPtData = [];
-    const minD = parseInt(distanceSlider.min);
-    const maxD = parseInt(distanceSlider.max);
-    for (let dist = minD; dist <= maxD; dist += 5) {
-        const meanPl = calculateMeanPathloss(dist, currentK, currentGamma, currentD0);
-        meanPrPtData.push({ x: dist, y: -meanPl });
-    }
-    pathlossChart.data.datasets[0].data = meanPrPtData;
-    pathlossChart.update();
-}
-
-function resetSession() {
-    recordedData = [];
-    if (pathlossChart) {
-        pathlossChart.data.datasets[1].data = [];
-        pathlossChart.data.datasets[0].data = [];
-        pathlossChart.update();
-    }
-    graphPlaceholder.style.display = 'flex';
-    graphCanvas.style.display = 'none';
-    updateUIState();
-}
-
-function calculateCurrentSignal() {
-    const currentRxRadius_px = currentRxDistance_m * worldScale_pxPerMeter;
-    const rxPos_px = {
-        x: txPos_px.x + currentRxRadius_px * Math.cos(currentRxAngleRad),
-        y: txPos_px.y + currentRxRadius_px * Math.sin(currentRxAngleRad)
-    };
-    const meanPlDb = calculateMeanPathloss(currentRxDistance_m, currentK, currentGamma, currentD0);
-    const { shadowingDb, isOccluded } = calculateShadowingAtPosition(rxPos_px);
-    const totalPlDb = meanPlDb + shadowingDb;
-    const prPtDb = -totalPlDb;
-    return { totalPlDb, prPtDb, isOccluded };
-}
-
-function updateSimulation() {
-    const { totalPlDb, prPtDb, isOccluded } = calculateCurrentSignal();
-    outTotalPl.textContent = totalPlDb.toFixed(2);
-    outPrPt.textContent = prPtDb.toFixed(2);
-    outStatus.textContent = isOccluded ? "Occluded" : "Line of Sight";
-    statusIndicator.className = `status-indicator ${isOccluded ? 'status-occluded' : 'status-los'}`;
-    const currentRxRadius_px = currentRxDistance_m * worldScale_pxPerMeter;
-    const rxPos_px = {
-        x: txPos_px.x + currentRxRadius_px * Math.cos(currentRxAngleRad),
-        y: txPos_px.y + currentRxRadius_px * Math.sin(currentRxAngleRad)
-    };
-    drawSimulationCanvas(rxPos_px, currentRxRadius_px, isOccluded);
-}
-
-function initializeChart() {
-    pathlossChart = new Chart(graphCanvas, {
-        type: 'scatter',
-        data: {
-            datasets: [
-                { 
-                    label: 'Ideal Pathloss (No Shadowing)', data: [], borderColor: '#3498db',
-                    borderDash: [8, 4], type: 'line', fill: false, pointRadius: 0, borderWidth: 3,
-                },
-                {
-                    label: 'Recorded Pr/Pt (with Fading)', 
-                    data: [], 
-                    borderColor: '#e74c3c', 
-                    backgroundColor: '#e74c3c', 
-                    pointRadius: 6,
-                    borderWidth: 2,
-                    showLine: true,
-                    type: 'line'
+    function loadImages() {
+        return new Promise((resolve) => {
+            txImage = new Image();
+            rxImage = new Image();
+            let loadedCount = 0;
+            
+            const onImageLoad = () => {
+                loadedCount++;
+                if (loadedCount === 2) {
+                    resolve();
                 }
-            ]
-        },
-        options: {
-            // CHANGE: Set responsive to true and maintainAspectRatio to false
-            responsive: true,
-            maintainAspectRatio: false,
-            layout: {
-                padding: 20  // Increase padding
-            },
-            plugins: { legend: { labels: { usePointStyle: true, font: { size: 12 } } } },
-            scales: {
-                x: {
-                    type: 'linear',
-                    title: { display: true, text: 'Distance (meters)', font: { size: 16, weight: '600' } },
-                    min: parseInt(distanceSlider.min), max: parseInt(distanceSlider.max)
-                },
-                y: { 
-                    title: { display: true, text: 'Pr/Pt (dB)', font: { size: 16, weight: '600' } },
-                    suggestedMax: -50,
-                    suggestedMin: -160
-                }
-            }
-        }
-    });
-}        
-
-// --- All calculation and drawing functions are included below without change ---
-function calculateWorldScale() { worldScale_pxPerMeter = maxCanvasDisplayRadius_px / parseFloat(distanceSlider.max); }
-function placeObstacles() {
-    obstacles = []; const densityPerKm2 = 500; const maxSimDistance_m = parseFloat(distanceSlider.max);
-    const areaKm2 = Math.PI * (maxSimDistance_m / 1000) ** 2; const numObs = Math.round(densityPerKm2 * areaKm2);
-    for (let i = 0; i < numObs; i++) {
-        const obsDistFromTx_m = Math.sqrt(Math.random()) * maxSimDistance_m; const obsAngleRad = Math.random() * 2 * Math.PI;
-        const obsRadius_m = Math.random() * 8 * 0.6 + 8 * 0.2; const obsX_m = obsDistFromTx_m * Math.cos(obsAngleRad);
-        const obsY_m = obsDistFromTx_m * Math.sin(obsAngleRad); const attenuation = Math.max(0.5, 8 + (Math.random() - 0.5) * 2 * 5);
-        obstacles.push({
-            x_m: obsX_m, y_m: obsY_m, radius_m: obsRadius_m, attenuationDb: attenuation,
-            x_px: txPos_px.x + obsX_m * worldScale_pxPerMeter, y_px: txPos_px.y + obsY_m * worldScale_pxPerMeter,
-            radius_px: Math.max(2, obsRadius_m * worldScale_pxPerMeter), color: `hsl(${30 + (attenuation / 20) * 30}, 70%, ${60 - (attenuation / 20) * 20}%)`
+            };
+            
+            txImage.onload = onImageLoad;
+            rxImage.onload = onImageLoad;
+            
+            // This fallback ensures the promise resolves even if an image fails to load
+            txImage.onerror = onImageLoad;
+            rxImage.onerror = onImageLoad;
+            
+            txImage.src = TX_ICON;
+            rxImage.src = RX_ICON;
         });
     }
-}
-function calculateShadowingAtPosition(rxPos_px) {
-    let totalShadowingDb = 0; let occluded = false;
-    for (const obs of obstacles) {
-        const obsCenter_px = { x: obs.x_px, y: obs.y_px };
-        if (isLineSegmentIntersectingCircle(txPos_px, rxPos_px, obsCenter_px, obs.radius_px ** 2)) {
-            totalShadowingDb += obs.attenuationDb; occluded = true;
+
+    async function init() {
+        await loadImages();
+        setupEventListeners();
+        initializeChart();
+        readAllInputs();
+        calculateWorldScale();
+        placeObstacles();
+        updateSimulation();
+        updateUIState();
+    }
+
+    function setupEventListeners() {
+        [kInput, gammaInput, d0Input, densityInput, distanceSlider, angleSlider].forEach(el => {
+            el.addEventListener('input', () => { readAllInputs(); updateSimulation(); });
+        });
+        randomizeBtn.addEventListener('click', () => {
+            placeObstacles();
+            updateSimulation();
+        });
+        recordBtn.addEventListener('click', recordDataPoint);
+        generateGraphBtn.addEventListener('click', generateGraph);
+        resetBtn.addEventListener('click', resetSession);
+    }
+    
+    function readAllInputs() {
+        currentK = parseFloat(kInput.value);
+        currentGamma = parseFloat(gammaInput.value);
+        currentD0 = parseFloat(d0Input.value);
+        currentRxDistance_m = parseFloat(distanceSlider.value);
+        distanceDisplay.textContent = currentRxDistance_m.toFixed(0);
+        currentRxAngleRad = parseFloat(angleSlider.value) * Math.PI / 180;
+        angleDisplay.textContent = (currentRxAngleRad * 180 / Math.PI).toFixed(0);
+    }
+    
+    function updateUIState() {
+        recordCountDisplay.textContent = `${recordedData.length} / ${MAX_RECORDINGS}`;
+        recordBtn.disabled = recordedData.length >= MAX_RECORDINGS;
+        generateGraphBtn.disabled = recordedData.length < MIN_RECORDINGS;
+    }
+    
+    function recordDataPoint() {
+        if (recordedData.length >= MAX_RECORDINGS) return;
+        readAllInputs();
+        const { prPtDb } = calculateCurrentSignal();
+        recordedData.push({ x: currentRxDistance_m, y: prPtDb });
+        updateUIState();
+    }
+    
+    function generateGraph() {
+        graphPlaceholder.style.display = 'none';
+        graphCanvas.style.display = 'block';
+
+        const sortedRecordedData = [...recordedData].sort((a, b) => a.x - b.x);
+        pathlossChart.data.datasets[1].data = sortedRecordedData;
+
+        const meanPrPtData = [];
+        const minD = parseInt(distanceSlider.min);
+        const maxD = parseInt(distanceSlider.max);
+        for (let dist = minD; dist <= maxD; dist += 5) {
+            const meanPl = calculateMeanPathloss(dist, currentK, currentGamma, currentD0);
+            meanPrPtData.push({ x: dist, y: -meanPl });
+        }
+        pathlossChart.data.datasets[0].data = meanPrPtData;
+        pathlossChart.update();
+    }
+    
+    function resetSession() {
+        recordedData = [];
+        if (pathlossChart) {
+            pathlossChart.data.datasets[1].data = [];
+            pathlossChart.data.datasets[0].data = [];
+            pathlossChart.update();
+        }
+        graphPlaceholder.style.display = 'flex';
+        graphCanvas.style.display = 'none';
+        updateUIState();
+        placeObstacles();
+        updateSimulation();
+    }
+    
+    function calculateCurrentSignal() {
+        const currentRxRadius_px = currentRxDistance_m * worldScale_pxPerMeter;
+        const rxPos_px = {
+            x: txPos_px.x + currentRxRadius_px * Math.cos(currentRxAngleRad),
+            y: txPos_px.y + currentRxRadius_px * Math.sin(currentRxAngleRad)
+        };
+        const meanPlDb = calculateMeanPathloss(currentRxDistance_m, currentK, currentGamma, currentD0);
+        const { shadowingDb, isOccluded } = calculateShadowingAtPosition(rxPos_px);
+        const totalPlDb = meanPlDb + shadowingDb;
+        const prPtDb = -totalPlDb;
+        return { totalPlDb, prPtDb, isOccluded };
+    }
+
+    function updateSimulation() {
+        const { totalPlDb, prPtDb, isOccluded } = calculateCurrentSignal();
+        outTotalPl.textContent = totalPlDb.toFixed(2);
+        outPrPt.textContent = prPtDb.toFixed(2);
+        outStatus.textContent = isOccluded ? "Occluded" : "Line of Sight";
+        statusIndicator.className = `status-indicator ${isOccluded ? 'status-occluded' : 'status-los'}`;
+        const currentRxRadius_px = currentRxDistance_m * worldScale_pxPerMeter;
+        const rxPos_px = {
+            x: txPos_px.x + currentRxRadius_px * Math.cos(currentRxAngleRad),
+            y: txPos_px.y + currentRxRadius_px * Math.sin(currentRxAngleRad)
+        };
+        drawSimulationCanvas(rxPos_px, currentRxRadius_px, isOccluded);
+    }
+    
+    function initializeChart() {
+        pathlossChart = new Chart(graphCanvas, {
+            type: 'scatter',
+            data: {
+                datasets: [
+                    { 
+                        label: 'Ideal Pathloss (No Shadowing)', data: [], borderColor: '#3498db',
+                        borderDash: [8, 4], type: 'line', fill: false, pointRadius: 0, borderWidth: 3,
+                    },
+                    {
+                        label: 'Recorded Pr/Pt (with Fading)', 
+                        data: [], 
+                        borderColor: '#e74c3c', 
+                        backgroundColor: '#e74c3c', 
+                        pointRadius: 4,
+                        borderWidth: 2,
+                        showLine: true,
+                        type: 'line'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: {
+                    padding: 20
+                },
+                plugins: { legend: { labels: { usePointStyle: true, font: { size: 12 } } } },
+                scales: {
+                    x: {
+                        type: 'linear',
+                        title: { display: true, text: 'Distance (meters)', font: { size: 16, weight: '600' } },
+                        min: parseInt(distanceSlider.min), max: parseInt(distanceSlider.max)
+                    },
+                    y: { 
+                        title: { display: true, text: 'Pr/Pt (dB)', font: { size: 16, weight: '600' } },
+                        suggestedMax: -50,
+                        suggestedMin: -160
+                    }
+                }
+            }
+        });
+    }        
+
+    function poissonRandom(lambda) {
+        let L = Math.exp(-lambda);
+        let k = 0;
+        let p = 1;
+        do {
+            k++;
+            p *= Math.random();
+        } while (p > L);
+        return k - 1;
+    }
+
+    function calculateWorldScale() { 
+        worldScale_pxPerMeter = maxCanvasDisplayRadius_px / parseFloat(distanceSlider.max); 
+    }
+    
+    function placeObstacles() {
+        obstacles = [];
+        const densityPerKm2 = parseFloat(densityInput.value); 
+        const maxSimDistance_m = parseFloat(distanceSlider.max);
+        const areaKm2 = Math.PI * Math.pow(maxSimDistance_m / 1000, 2);
+        const lambda = densityPerKm2 * areaKm2;
+        const numObs = poissonRandom(lambda);
+        
+        for (let i = 0; i < numObs; i++) {
+            const obsDistFromTx_m = Math.sqrt(Math.random()) * maxSimDistance_m; 
+            const obsAngleRad = Math.random() * 2 * Math.PI;
+            const obsRadius_m = Math.random() * 8 * 0.6 + 8 * 0.2; 
+            const obsX_m = obsDistFromTx_m * Math.cos(obsAngleRad);
+            const obsY_m = obsDistFromTx_m * Math.sin(obsAngleRad); 
+            const attenuation = Math.max(0.5, 8 + (Math.random() - 0.5) * 2 * 5);
+            obstacles.push({
+                x_m: obsX_m, y_m: obsY_m, radius_m: obsRadius_m, attenuationDb: attenuation,
+                x_px: txPos_px.x + obsX_m * worldScale_pxPerMeter, y_px: txPos_px.y + obsY_m * worldScale_pxPerMeter,
+                radius_px: Math.max(2, obsRadius_m * worldScale_pxPerMeter), 
+                color: `hsl(${30 + (attenuation / 20) * 30}, 70%, ${60 - (attenuation / 20) * 20}%)`
+            });
         }
     }
-    totalShadowingDb += (Math.random() - 0.5) * 8; return { shadowingDb: totalShadowingDb, isOccluded: occluded };
-}
-function calculateMeanPathloss(distance, K, gamma, d0) {
-    if (distance <= 0) distance = 0.1; if (d0 <= 0) d0 = 0.1;
-    return (distance < d0) ? K : K + 10 * gamma * Math.log10(distance / d0);
-}
-function isLineSegmentIntersectingCircle(P1, P2, C, R_sq) {
-    let dX = P2.x - P1.x; let dY = P2.y - P1.y; if ((dX === 0) && (dY === 0)) return false;
-    let t = ((C.x - P1.x) * dX + (C.y - P1.y) * dY) / (dX * dX + dY * dY); t = Math.max(0, Math.min(1, t));
-    let closestX = P1.x + t * dX; let closestY = P1.y + t * dY;
-    return ((C.x - closestX) ** 2 + (C.y - closestY) ** 2) <= R_sq;
-}
-function drawSimulationCanvas(rxPos_px, currentRxRadius_px, isOccluded) {
-    simCtx.clearRect(0, 0, canvasWidth, canvasHeight); simCtx.strokeStyle = 'rgba(74, 105, 189, 0.3)'; simCtx.lineWidth = 1; simCtx.setLineDash([3, 3]);
-    for (let i = 50; i <= 200; i += 50) {
-        const r = i * worldScale_pxPerMeter; simCtx.beginPath(); simCtx.arc(txPos_px.x, txPos_px.y, r, 0, 2 * Math.PI); simCtx.stroke();
-    }
-    simCtx.setLineDash([]); simCtx.beginPath(); simCtx.arc(txPos_px.x, txPos_px.y, currentRxRadius_px, 0, 2 * Math.PI);
-    simCtx.strokeStyle = isOccluded ? 'rgba(255, 87, 34, 0.8)' : 'rgba(76, 175, 80, 0.8)'; simCtx.lineWidth = 2; simCtx.setLineDash([5, 5]); simCtx.stroke(); simCtx.setLineDash([]);
-    obstacles.forEach(obs => {
-        simCtx.fillStyle = obs.color; simCtx.fillRect(obs.x_px - obs.radius_px, obs.y_px - obs.radius_px, obs.radius_px * 2, obs.radius_px * 2);
-    });
-    simCtx.beginPath(); simCtx.moveTo(txPos_px.x, txPos_px.y); simCtx.lineTo(rxPos_px.x, rxPos_px.y);
-    simCtx.strokeStyle = isOccluded ? '#ff5722' : '#4caf50'; simCtx.lineWidth = 3; simCtx.stroke();
-}
 
-document.addEventListener('DOMContentLoaded', init);
+    function calculateShadowingAtPosition(rxPos_px) {
+        let totalShadowingDb = 0; let occluded = false;
+        for (const obs of obstacles) {
+            const obsCenter_px = { x: obs.x_px, y: obs.y_px };
+            if (isLineSegmentIntersectingCircle(txPos_px, rxPos_px, obsCenter_px, obs.radius_px ** 2)) {
+                totalShadowingDb += obs.attenuationDb; occluded = true;
+            }
+        }
+        totalShadowingDb += (Math.random() - 0.5) * 8; return { shadowingDb: totalShadowingDb, isOccluded: occluded };
+    }
+
+    function calculateMeanPathloss(distance, K, gamma, d0) {
+        if (distance <= 0) distance = 0.1; if (d0 <= 0) d0 = 0.1;
+        return (distance < d0) ? K : K + 10 * gamma * Math.log10(distance / d0);
+    }
+
+    function isLineSegmentIntersectingCircle(P1, P2, C, R_sq) {
+        let dX = P2.x - P1.x; let dY = P2.y - P1.y; if ((dX === 0) && (dY === 0)) return false;
+        let t = ((C.x - P1.x) * dX + (C.y - P1.y) * dY) / (dX * dX + dY * dY); t = Math.max(0, Math.min(1, t));
+        let closestX = P1.x + t * dX; let closestY = P1.y + t * dY;
+        return ((C.x - closestX) ** 2 + (C.y - closestY) ** 2) <= R_sq;
+    }
+    
+    function drawSimulationCanvas(rxPos_px, currentRxRadius_px, isOccluded) {
+        simCtx.clearRect(0, 0, canvasWidth, canvasHeight);
+        
+        // Draw distance grid
+        simCtx.strokeStyle = 'rgba(74, 105, 189, 0.3)'; simCtx.lineWidth = 1; simCtx.setLineDash([3, 3]);
+        for (let i = 50; i <= 200; i += 50) {
+            const r = i * worldScale_pxPerMeter; simCtx.beginPath(); simCtx.arc(txPos_px.x, txPos_px.y, r, 0, 2 * Math.PI); simCtx.stroke();
+        }
+        
+        // Draw receiver's current orbit
+        simCtx.setLineDash([]); simCtx.beginPath(); simCtx.arc(txPos_px.x, txPos_px.y, currentRxRadius_px, 0, 2 * Math.PI);
+        simCtx.strokeStyle = isOccluded ? 'rgba(255, 87, 34, 0.8)' : 'rgba(76, 175, 80, 0.8)'; simCtx.lineWidth = 2; simCtx.setLineDash([5, 5]); simCtx.stroke(); simCtx.setLineDash([]);
+        
+        // Draw obstacles
+        obstacles.forEach(obs => {
+            simCtx.fillStyle = obs.color; simCtx.fillRect(obs.x_px - obs.radius_px, obs.y_px - obs.radius_px, obs.radius_px * 2, obs.radius_px * 2);
+        });
+
+        // Draw Transmitter Image (Tower)
+        if(txImage && txImage.complete) {
+            simCtx.drawImage(txImage, txPos_px.x - TX_IMG_SIZE / 2, txPos_px.y - TX_IMG_SIZE / 2, TX_IMG_SIZE, TX_IMG_SIZE);
+        }
+
+        // Draw Receiver Image (Phone)
+        if(rxImage && rxImage.complete) {
+            simCtx.drawImage(rxImage, rxPos_px.x - RX_IMG_SIZE / 2, rxPos_px.y - RX_IMG_SIZE / 2, RX_IMG_SIZE, RX_IMG_SIZE);
+        }
+        
+        // Draw signal path line on top
+        simCtx.beginPath(); 
+        simCtx.moveTo(txPos_px.x, txPos_px.y); 
+        simCtx.lineTo(rxPos_px.x, rxPos_px.y);
+        simCtx.strokeStyle = isOccluded ? '#ff5722' : '#4caf50'; 
+        simCtx.lineWidth = 3; 
+        simCtx.stroke();
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
 }
