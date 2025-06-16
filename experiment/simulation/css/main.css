@@ -815,7 +815,8 @@ to {
   background-color: #f0f0f0;
   border: 2px solid #98CB3B;
   border-radius: 10px;
-  max-height: 600px;
+  max-height: 500px;
+  min-width: 480px;
 }
 
 .input-group { 
@@ -1105,25 +1106,7 @@ button.secondary:hover:not(:disabled) {
 
 
 /* Medium screens - tablets and small laptops */
-@media (max-width: 1199px) and (min-width: 768px) {
-  .columns-container {
-    flex-direction: row;
-    padding: 15px;
-    gap: 10px;
-  }
-  
-  .left-column, .left-column3 {
-    min-width: 220px;
-  }
-  
-  .center-column, .center-column3 {
-    min-width: 280px;
-  }
-  
-  .right-column, .right-column3 {
-    min-width: 220px;
-  }
-}
+
 
 /* Small tablets and large phones */
 @media (max-width: 767px) and (min-width: 481px) {
@@ -1148,7 +1131,7 @@ button.secondary:hover:not(:disabled) {
 @media (max-width: 480px) {
   .columns-container {
     flex-direction: column;
-    padding: 5px;
+    padding: 4px;
   }
   
   .left-column, .center-column, .right-column,
