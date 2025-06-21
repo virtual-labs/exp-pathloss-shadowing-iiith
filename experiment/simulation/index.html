@@ -274,7 +274,7 @@
        
                 <h3>Control Panel</h3>
 								<div class="panel-content">
-							
+						
 											<div class="section-title">System Parameters</div>
 											<div class="input-group">
 													<label for="k_val">Pathloss at Reference Distance (K, dB)</label>
@@ -285,22 +285,22 @@
 													<input type="number" id="gamma_val" value="3.71" step="0.01">
 											</div>
 											<div class="input-group">
-													<label for="d0_val">Reference Distance (d₀, meters)</label>
-													<input type="number" id="d0_val" value="1" step="0.1" min="0.1">
+													<label for="d0_val">Reference Distance (d₀, km)</label>
+													<input type="number" id="d0_val" value="0.01" step="0.001" min="0.001">
 											</div>
 											<div class="input-group">
 													<label for="obstacle_density_val">Obstacle Density (per km²)</label>
 													<input type="number" id="obstacle_density_val" value="500" step="10" min="0">
 											</div>
-								
-								
+							
+	
 											<div class="section-title">Receiver Position</div>
 											<div class="slider-container">
 													<div class="slider-label">
-															<span>Distance from Transmitter (m)</span>
-															<span id="current_distance_val" class="value-display">50</span>
+															<span>Distance from Transmitter (km)</span>
+															<span id="current_distance_val" class="value-display">2.50</span>
 													</div>
-													<input type="range" id="current_distance_slider" min="20" max="200" value="50" step="1">
+													<input type="range" id="current_distance_slider" min="0.02" max="5.0" value="2.5" step="0.05">
 											</div>
 											<div class="slider-container">
 													<div class="slider-label">
@@ -311,20 +311,23 @@
 											</div>
 							
 	
-					
+							
 											<div class="section-title">Data Recording</div>
 											<div class="recording-info">
-													<p>Recorded Points: <span id="record_count_display">0 / 25</span></p>
+													<p>Recorded Points: <span id="record_count_display">0 / 50</span></p>
 											</div>
 											<div class="button-group">
-													<button id="record_data_btn" class="primary">Record Point</button>
-													<button id="generate_graph_btn" class="secondary">Generate Graph</button>
+													<button id="record_data_btn" class="primary" style="padding: 8px 16px; min-width: 150px; font-size: 14px; border: none; border-radius: 4px; margin: 5px; cursor: pointer;">Record Point</button>
+													<button id="generate_graph_btn" class="secondary" style=" padding: 8px 16px; min-width: 150px; font-size: 14px; border: none; border-radius: 4px; margin: 5px; cursor: pointer;">Generate Graph</button>
 											</div>
 											<div class="button-group">
-													<button id="reset_session_btn">Reset Session</button>
-													<button id="randomize_obstacles_btn">New Environment</button>
+												<button id="reset_session_btn" style="background-color:orange; color: white; padding: 8px 16px; min-width: 150px; font-size: 14px; border: none; border-radius: 4px; margin: 5px; cursor: pointer;">Reset Session</button>
+												<button id="auto_generate_btn" style="background-color: yellowgreen; color: white; padding: 8px 16px; min-width: 150px; font-size: 14px; border: none; border-radius: 4px; margin: 5px; cursor: pointer;">Auto-Generate Points</button>
 											</div>
-					
+											<div class="button-group single">
+												<button id="randomize_obstacles_btn" style="background-color: #2196F3; color: white; padding: 8px 16px; min-width: 150px; font-size: 14px; border: none; border-radius: 4px; margin: 5px; cursor: pointer;">New Environment</button>
+											</div>
+								
 							</div>
      
                         </div>
@@ -335,7 +338,6 @@
 												<canvas id="simulationCanvas" width="420" height="420"></canvas>
 												
 												<div class="simulation-legend">
-														<!-- CHANGE: Using Base64 encoded SVGs to fix rendering bug -->
 														<div class="legend-item">
 																<img class="legend-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzY2N2VlYSI+PHBhdGggZD0iTTEyIDNsNCA0aC0zdjEwaC0yVjdIOFs0LTR6TTQgOWgzdjJINGMtMnptMCA0aDN2Mkg0di0yem0xNi00aC0zdjJoM3YtMnptMCA0aC0zdjJoM3YtMnoiLz48L3N2Zz4=">
 																<span>Transmitter</span>
@@ -361,10 +363,10 @@
                         <div class="column is-3-desktop is-10-tablet is-5-mobile">
 													<h3>Results</h3>
 												
-																<div class="graph-container">
-																		<div id="graph_placeholder">Record at least 10 data points to generate the analysis graph</div>
-																		<canvas id="pathlossGraph" style="display: none;"></canvas>
-																</div>
+													<div class="graph-container">
+														<div id="graph_placeholder">Record at least 10 data points to generate the analysis graph</div>
+														<canvas id="pathlossGraph" style="display: none;"></canvas>
+												</div>
 											
 											
                             </div>
