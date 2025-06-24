@@ -1062,7 +1062,15 @@ button.secondary:hover:not(:disabled) {
   height: inherit;
 }
 
-#pathlossGraph, #graph_placeholder {
+#pathlossGraph{
+  width: 100%;
+  /* CHANGE 1: Increased max-width to fill the new column size */
+  max-width: 459px;
+  /* CHANGE 2: Increased height to make the graph taller */
+  min-height:500px ;
+
+}
+ #graph_placeholder {
   width: 100%;
   /* CHANGE 4: Increased max-width to fill the new column size */
   max-width: 600px;
