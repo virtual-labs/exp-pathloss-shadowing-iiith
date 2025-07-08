@@ -114,216 +114,7 @@ input[type="radio"] {
 
 }
 
-/* ----------------------------------------- Big Tabs ------------------------------------------ */
 
-@media (max-width: 1200px) and (min-width: 768px){
-
-  
-.max-width{
-    max-width: 1024px;
-    padding: 0 40px;
-    margin: auto;
-}
-  
-section .title{
-  position: relative;
-  text-align: center;
-  color: #000000;
-  font-size: 40px;
-  font-weight: 500;
-  margin-top: 10%;
-  width: 80%;
-  font-family: 'Ubuntu', sans-serif;
-}
-  
-.fre{
-  display: flex;
-  color: #000000; /* Color of Name, and moving text in first page*/
-  background-size: cover;
-  background-attachment: fixed;
-  font-family: 'Ubuntu', sans-serif;
-}
-  
-.fill1 {
-    position: relative;
-    margin-left: 25%;
-    margin-top: 20%;
-    top: 0%;
-    left: 0%;
-    transform: translate(-50%, -50%);
-    float: left;
-}
-
-.form1{
-  position: relative;
-  margin-left: -20%;
-  margin-top: 30%;
-  margin-bottom: 20%;
-}
-
-.figureLast{
-    margin-left: -30%;
-}
-  
-}
-
-/* ----------------------------------------- Small Tabs ------------------------------------------ */
-@media (max-width: 768px) and (min-width: 720px){
-
-  
-.max-width{
-  max-width: 1024px;
-  padding: 0 40px;
-  margin: auto;
-}
-
-section .title{
-position: relative;
-text-align: center;
-color: #000000;
-font-size: 40px;
-font-weight: 500;
-margin-top: 10%;
-font-family: 'Ubuntu', sans-serif;
-}
-
-.fre{
-display: flex;
-color: #000000; /* Color of Name, and moving text in first page*/
-background-size: cover;
-background-attachment: fixed;
-font-family: 'Ubuntu', sans-serif;
-}
-
-.fill1 {
-  position: relative;
-  margin-left: 25%;
-  margin-top: 20%;
-  top: 0%;
-  left: 0%;
-  transform: translate(-50%, -50%);
-  float: left;
-}
-
-.form1{
-  position: relative;
-  margin-left: 20%;
-  margin-top: 30%;
-  margin-bottom: 20%;
-}
-
-.figureLast{
-  margin-left: 0%;
-}
-
-}
-
-/* ----------------------------------------------- Large Phones ---------------------------------- */
-
-@media (max-width: 1000px) and (min-width: 420px){
-
-  
-.max-width{
-    max-width: 1000px;
-    margin: auto;
-}
-  
-section .title{
-  position: relative;
-  text-align: center;
-  color: #000000;
-  font-size: 40px;
-  font-weight: 500;
-  margin-top: 10%;
-  width: 80%;
-  font-family: 'Ubuntu', sans-serif;
-}
-  
-.fre{
-  display: flex;
-  color: #000000; /* Color of Name, and moving text in first page*/
-  background-size: cover;
-  background-attachment: fixed;
-  font-family: 'Ubuntu', sans-serif;
-}
-
-.fill1 {
-    position: relative;
-    margin-left: 35%;
-    margin-top: 20%;
-    top: 0%;
-    left: 0%;
-    transform: translate(-50%, -50%);
-    float: left;
-}
-
-.form1{
-  position: relative;
-  margin-left: 20%;
-  margin-top: 30%;
-  margin-bottom: 20%;
-}
-
-.figureLast{
-    margin-left: 0%;
-}
-
-}
-
-/* ------------------------------------- Small Phones ------------------------------------ */
-
-@media (max-width: 420px){
-
-  
-.max-width{
-    max-width: 460px;
-    padding: 0 40px;
-    margin: auto;
-}
- 
-section .title{
-  position: relative;
-  text-align: center;
-  color: #000000;
-  font-size: 40px;
-  font-weight: 500;
-  margin-top: 10%;
-  width: 80%;
-  font-family: 'Ubuntu', sans-serif;
-}
-  
-.fre{
-  display: flex;
-  color: #000000; /* Color of Name, and moving text in first page*/
-  background-size: cover;
-  background-attachment: fixed;
-  font-family: 'Ubuntu', sans-serif;
-}
-
-.fill1 {
-    position: relative;
-    margin-left: 30%;
-    margin-top: 20%;
-    top: 0%;
-    left: 0%;
-    transform: translate(-50%, -50%);
-    float: left;
-}
-
-
-  
-.form1{
-  position: relative;
-  margin-left: 0%;
-  margin-top: 30%;
-  margin-bottom: 20%;
-}
-
-.figureLast{
-    margin-left: 0%;
-}
-  
-}
 
 /* ----------------------------------------- Plot Button -----------------------------------------------------*/
 
@@ -423,29 +214,29 @@ th{
 
 
 .left-column {
-  flex: 2; /* Reduced from 4 to make it smaller */
-  margin-right: 10px;
+  flex: 1; /* Reduced from 4 to make it smaller */
+  margin-right: 5px;
   background-color: #f0f0f0;
   border: 2px solid #98CB3B;
   border-radius: 10px;
   padding: 20px;
-  height: 330px;
-  min-width: 200px; /* Set minimum width */
+  max-height: 500px; /* Set maximum height */
+  min-width: 300px; /* Set minimum width */
 }
 
 .center-column {
-  flex: 8; /* Increased ratio for wider center */
+  flex: 2; /* Increased ratio for wider center */
   background-color: #ffffff;
   border: 2px solid #98CB3B;
   border-radius: 10px;
   padding: 20px;
-  height: 430px;
+
   min-width: 600px; /* Set minimum width */
 }
 
 .right-column {
-  flex: 2; /* Reduced from 3 to make it smaller */
-  margin-left: 10px;
+  flex: 1; /* Reduced from 3 to make it smaller */
+  margin-left: 5px;
   background-color: #f0f0f0;
   border: 2px solid #98CB3B;
   border-radius: 10px;
@@ -1150,7 +941,8 @@ button.secondary:hover:not(:disabled) {
   }
   
   #pathlossGraph, #graph_placeholder {
-    height: 300px !important;
+    height: 200px !important;
+    width: 250px !important;
   }
   
   .input-group input[type="number"],
@@ -1161,15 +953,230 @@ button.secondary:hover:not(:disabled) {
   .button-group {
     grid-template-columns: 1fr;
   }
+  
+  section .title {
+    font-size: 28px;
+    margin-top: 5%;
+    width: 100%;
+  }
 }
 
+/* Medium-small phones */
+@media (max-width: 480px) {
+  .columns-container {
+    padding: 5px;
+    gap: 8px;
+  }
+  
+  .left-column, .center-column, .right-column,
+  .left-column3, .center-column3, .right-column3 {
+    padding: 10px;
+  }
+  
+  .tab button {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+  
+  .button-group {
+    grid-template-columns: 1fr;
+  }
+  
+  section .title {
+    font-size: 24px;
+  }
+  
+  #pathlossGraph, #graph_placeholder {
+    height: 250px !important;
+  }
+  
+  .simulation-legend {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+  
+  .metrics {
+    grid-template-columns: 1fr;
+  }
+}
 
+/* Very small phones (300px width) */
+@media (max-width: 320px) {
+  .columns-container {
+    padding: 3px;
+    gap: 5px;
+  }
+  
+  .left-column, .center-column, .right-column,
+  .left-column3, .center-column3, .right-column3 {
+    padding: 8px;
+  }
+  
+  .tab button {
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+  
+  .input-group label {
+    font-size: 0.8em;
+  }
+  
+  .input-group input[type="number"] {
+    padding: 8px;
+    font-size: 0.9em;
+  }
+  
+  .section-title {
+    font-size: 0.9em;
+  }
+  
+  section .title {
+    font-size: 20px;
+  }
+  
+  #button-container button {
+    padding: 8px 12px;
+    font-size: 0.9em;
+    min-width: 100px;
+  }
+  
+  .slider-label span {
+    font-size: 0.8em;
+  }
+  
+  .value-display {
+    padding: 3px 8px;
+    font-size: 0.8em;
+    min-width: 40px;
+  }
+  
+  .metric-card {
+    padding: 0.5rem;
+  }
+  
+  .metric-value {
+    font-size: 1rem;
+  }
+  
+  .metric-label {
+    font-size: 0.8rem;
+  }
+  
+  #pathlossGraph, #graph_placeholder {
+    height: 200px !important;
+  }
+}
 
+/* Fix for Task3 simulation responsiveness */
+#task3 .center-column3 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-/* Status display adjustments */
-.status-display {
+#simulationCanvas {
+  width: 100% !important;
+  height: auto !important;
+  max-width: 420px;
+  max-height: 420px;
+  border: 3px solid #e8ecf0;
+  border-radius: 15px;
+  background-color: #ffffff;
+  margin: 0 auto 20px auto;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  display: block;
+}
+
+/* Ensure graphs are responsive */
+canvas {
+  width: 100% !important;
+  height: auto !important;
+  max-height: 450px;
+}
+
+/* Improve form element touch targets for mobile */
+.fill1 input[type="number"],
+.input-group input[type="number"] {
+  min-height: 44px; /* Minimum touch target size */
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  width: 28px;
+  height: 28px;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 28px;
+  height: 28px;
+}
+
+/* Improve button touch targets */
+button {
+  min-height: 44px;
+}
+
+/* Fix any overflow issues with tables */
+table {
   width: 100%;
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+/* Fix for experiment area height on mobile devices */
+#experiment-area {
+  position: relative; /* Changed from absolute for better mobile layout */
+  width: 98%; 
+  aspect-ratio: 4 / 4;
+  border-radius: 9px;
+  background: linear-gradient(180deg, #87CEEB 0%, #87CEEB 60%, #90EE90 60%, #90EE90 100%);
+  overflow: hidden;
   box-sizing: border-box;
-  padding: 10px;
-  margin-bottom: 15px;
+  padding: var(--experiment-padding);
+  margin: 0 auto;
+  min-height: 300px; /* Ensure minimum height on all devices */
+}
+
+/* Ensure center column has appropriate height on mobile */
+@media (max-width: 768px) {
+  .center-column {
+    min-height: 400px !important; /* Force minimum height for center column on mobile */
+    height: auto !important; /* Allow height to grow if needed */
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 350px; /* Ensure content area has minimum height */
+  }
+  
+  #experiment-area {
+    flex: 1;
+    min-height: 300px;
+    margin-bottom: 20px;
+  }
+  
+  /* Ensure antennas are positioned correctly within the experiment area */
+  .antenna {
+    bottom: 40%; /* Keep the same positioning */
+  }
+  
+  #transmitter {
+    left: 10px; /* Fixed position instead of using CSS variable */
+  }
+}
+
+/* Very small phones (300px width) - additional height adjustments */
+@media (max-width: 320px) {
+  .center-column {
+    min-height: 350px !important;
+  }
+  
+  #experiment-area {
+    min-height: 250px;
+  }
 }
