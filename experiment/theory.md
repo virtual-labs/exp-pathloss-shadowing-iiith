@@ -5,13 +5,13 @@ Pathloss is a measure of signal attenuation (i.e. reduction in received signal p
 
 $$
 \begin{aligned}
-PL = \frac{P_{t}}{P_{r}}
+    PL = \frac{P_{t}}{P_{r}}
 \end{aligned}
 $$
 
 $$
 \begin{aligned}
-PL(\text{in dB}) = 10~ \log_{10} \frac{P_t}{P_{r}}
+    PL(\text{in dB}) = 10~ \log_{10} \frac{P_t}{P_{r}}
 \end{aligned}
 $$
 
@@ -23,7 +23,9 @@ In general, the recieved power $P_r$ is dependent on the following factors:
 From the Friis free-space transmission equation,
 
 $$
-P_r = P_t~ G \left(\frac{\lambda}{4\pi d}\right)^2
+\begin{aligned}
+    P_r = P_t~ G \left(\frac{\lambda}{4\pi d}\right)^2
+\end{aligned}
 $$
 
 where, $G_{t} G_{r}=\sqrt{G}$ is the combined antenna gain.
@@ -34,7 +36,7 @@ we can now express Pathloss as
 
 $$
 \begin{aligned}
-PL(\text{in dB}) = 10~ \log _{10}\left(\frac{4 \pi d}{\lambda \sqrt{G}}\right)^{2},
+    PL(\text{in dB}) = 10~ \log _{10}\left(\frac{4 \pi d}{\lambda \sqrt{G}}\right)^{2},
 \end{aligned}
 $$
 
@@ -44,7 +46,7 @@ Now, after clearly understanding the concept of pathloss, have you wondered if t
 
 $$
 \begin{aligned}
-PL(\text{in dB})= 10 \log _{10}\left(\frac{4 \pi d}{\lambda \sqrt{G}}\right)^{2}+\psi
+    PL(\text{in dB})= 10 \log _{10}\left(\frac{4 \pi d}{\lambda \sqrt{G}}\right)^{2}+\psi
 \end{aligned}
 $$
 
@@ -52,7 +54,7 @@ The most common model for this additional attenuation, $\psi$, is log-normal sha
 
 $$
 \begin{aligned}
-p_\psi(\psi)=\frac{\varepsilon}{\sqrt{2 \pi} \sigma_{\psi_{d B}} \psi} \cdot \exp \left[\frac{-\left(10 \log_{10} \psi-\mu_{\psi d B}\right)^{2}}{2 \sigma_{d}^{2}}\right],
+    p_\psi(\psi)=\frac{\varepsilon}{\sqrt{2 \pi} \sigma_{\psi_{d B}} \psi} \cdot \exp \left[\frac{-\left(10 \log_{10} \psi-\mu_{\psi d B}\right)^{2}}{2 \sigma_{d}^{2}}\right],
 \end{aligned}
 $$
 
@@ -60,3 +62,4 @@ where $\xi=\frac{10}{\ln 10}$, $\mu_{\psi_{\text{in dB}}}$ is the mean and $\sig
 
 We can view the visual illustration of Pathloss and shadowing in the below figure.
 
+<img src="./images/exp1.png">
