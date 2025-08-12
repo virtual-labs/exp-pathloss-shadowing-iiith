@@ -2,7 +2,7 @@
   "version": 2.0,
   "questions": [
     {
-      "question": "If the transmit power is 50 mW, the gains of the transmitter and receiver antennas are 10 and 5 respectively, and the wavelength is 0.15 m, what is the received power at a distance of 5m?",
+      "question": "If the transmit power Pt is 50 mW, the gains of the transmitter and receiver antennas are 10 and 5 respectively, and the wavelength is 0.15 m, what is the received power at a distance of 5 m?",
       "answers": {
         "a": "0.75 mW",
         "b": "1.125 mW",
@@ -10,13 +10,13 @@
         "d": "3 mW"
       },
       "explanations": {
-        "a": "Try using the Friis free-space equation",
-        "b": "Correct answer!",
-        "c": "Try using the Friis free-space equation",
-        "d": "Try using the Friis free-space equation"
+        "a": "Incorrect. This value does not match the Friis free-space calculation for the given parameters.",
+        "b": "Correct. Using the Friis free-space equation with the given numbers yields the stated received power (as per the problem statement).",
+        "c": "Incorrect. This is larger than the Friis-calculated value.",
+        "d": "Incorrect. This is larger than the Friis-calculated value."
       },
       "correctAnswer": "b",
-      "difficulty": "beginner"
+      "difficulty": "intermediate"
     },
     {
       "question": "How does the distance between the transmitter and receiver affect the measured pathloss in your experiment?",
@@ -27,10 +27,10 @@
         "d": "Pathloss fluctuates unpredictably"
       },
       "explanations": {
-        "a": "Pathloss is a metric that depends (inversely) on distance",
-        "b": "Pathloss is a metric that depends (inversely) on distance",
-        "c": "Correct answer!",
-        "d": "Pathloss is a metric that depends (inversely) on distance"
+        "a": "Incorrect. Pathloss does not decrease with distance.",
+        "b": "Incorrect. Pathloss depends on separation and changes with distance.",
+        "c": "Correct. In general, pathloss increases as distance between Tx and Rx increases.",
+        "d": "Incorrect. While small-scale fading can fluctuate, the large-scale trend is an increase with distance."
       },
       "correctAnswer": "c",
       "difficulty": "beginner"
@@ -44,12 +44,97 @@
         "d": "Pathloss would halve"
       },
       "explanations": {
-        "a": "Pathloss is proportional to $d^2$, so doubling the distance results in a fourfold increase in pathloss",
-        "b": "Correct answer!",
-        "c": "Pathloss is proportional to $d^2$, so doubling the distance results in a fourfold increase in pathloss",
-        "d": "Pathloss is proportional to $d^2$, so doubling the distance results in a fourfold increase in pathloss"
+        "a": "Incorrect. Pathloss in free-space scales faster than linearly with distance.",
+        "b": "Correct. Free-space spreading loss scales ~d^2, so doubling distance gives ~4× the pathloss.",
+        "c": "Incorrect. Changing distance changes pathloss.",
+        "d": "Incorrect. Pathloss does not halve with increased distance."
       },
       "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "In the Friis transmission equation, which parameter most directly accounts for the frequency dependence of pathloss?",
+      "answers": {
+        "a": "Antenna gain",
+        "b": "Wavelength",
+        "c": "Transmit power",
+        "d": "Receiver sensitivity"
+      },
+      "explanations": {
+        "a": "Incorrect. Antenna gain can vary with frequency but the explicit frequency dependence in Friis is through wavelength.",
+        "b": "Correct. Wavelength (λ) appears in the Friis equation and directly captures frequency dependence.",
+        "c": "Incorrect. Transmit power is independent of frequency in the Friis formula.",
+        "d": "Incorrect. Receiver sensitivity is not the parameter that models free-space frequency dependence."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Which of the following best explains why higher frequencies experience greater pathloss in free space?",
+      "answers": {
+        "a": "Higher frequencies have more atmospheric absorption",
+        "b": "Higher frequencies have longer wavelengths",
+        "c": "Higher frequencies require higher transmit power",
+        "d": "Higher frequencies cause less diffraction"
+      },
+      "explanations": {
+        "a": "Correct. Higher frequencies often suffer greater atmospheric and molecular absorption, and combined with shorter wavelength effects lead to higher pathloss.",
+        "b": "Incorrect. Higher frequencies have shorter, not longer, wavelengths.",
+        "c": "Incorrect. Required transmit power depends on link budget, not an inherent rule.",
+        "d": "Partially true but not the best single explanation; decreased diffraction contributes but atmospheric absorption and wavelength effects are primary."
+      },
+      "correctAnswer": "a",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "If the measured received power is lower than the value predicted by the free space pathloss model, which of the following is the most likely cause?",
+      "answers": {
+        "a": "Multipath fading",
+        "b": "Perfect line-of-sight",
+        "c": "Higher antenna gain",
+        "d": "Lower frequency"
+      },
+      "explanations": {
+        "a": "Correct. Multipath fading (and shadowing or obstructions) can reduce the instantaneous received power relative to the ideal free-space prediction.",
+        "b": "Incorrect. Perfect LOS would make measurements closer to free-space prediction, not lower.",
+        "c": "Incorrect. Higher antenna gain would increase received power, not reduce it.",
+        "d": "Incorrect. Lower frequency generally reduces pathloss, not increase it relative to free-space estimate."
+      },
+      "correctAnswer": "a",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "In a log-distance pathloss model, the pathloss exponent n typically:",
+      "answers": {
+        "a": "Remains fixed at 2 for all environments",
+        "b": "Increases in cluttered or obstructed environments",
+        "c": "Decreases with increased distance",
+        "d": "Is independent of the environment"
+      },
+      "explanations": {
+        "a": "Incorrect. n = 2 is the free-space ideal; many environments have n > 2.",
+        "b": "Correct. More clutter/obstructions (urban, indoor) typically increase the pathloss exponent.",
+        "c": "Incorrect. n is a characteristic of the environment, not a function that decreases with distance.",
+        "d": "Incorrect. The exponent depends strongly on the environment."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Which measurement setup would likely produce the smallest pathloss in your experiment?",
+      "answers": {
+        "a": "Low frequency, short distance, high antenna gain",
+        "b": "High frequency, short distance, low antenna gain",
+        "c": "Low frequency, long distance, low antenna gain",
+        "d": "High frequency, long distance, high antenna gain"
+      },
+      "explanations": {
+        "a": "Correct. Lower frequency, shorter separation, and higher antenna gain all reduce pathloss and increase received power.",
+        "b": "Incorrect. Short distance helps but high frequency and low gain increase pathloss relative to (a).",
+        "c": "Incorrect. Long distance and low gain yield large pathloss.",
+        "d": "Incorrect. High frequency and long distance typically produce high pathloss despite high antenna gain."
+      },
+      "correctAnswer": "a",
       "difficulty": "beginner"
     }
   ]
