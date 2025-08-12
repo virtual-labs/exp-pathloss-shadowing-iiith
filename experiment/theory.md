@@ -57,3 +57,6 @@ p_\psi(\psi)=\frac{\varepsilon}{\sqrt{2 \pi} \sigma_{\psi_{d B}} \psi} \cdot \ex
 $$
 
 where $\xi=\frac{10}{\ln 10}$, $\mu_{\psi_{\text{in dB}}}$ is the mean and $\sigma_{\psi_{\text{in dB}}}^{2}$ is the variance.
+
+We can view the visual illustration of Pathloss and shadowing in the below figure.
+
