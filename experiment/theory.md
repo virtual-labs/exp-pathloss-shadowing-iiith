@@ -62,4 +62,6 @@ where $\xi=\frac{10}{\ln 10}$, $\mu_{\psi_{\text{in dB}}}$ is the mean and $\sig
 
 We can view the visual illustration of Pathloss and shadowing in the below figure.
 
+<p align="center">
 <img src="./images/exp1.png">
+</p>
