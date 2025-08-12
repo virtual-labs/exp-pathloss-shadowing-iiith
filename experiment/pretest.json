@@ -10,10 +10,10 @@
         "d": "All of the above"
       },
       "explanations": {
-        "a": "Pathloss depends on other factors too..",
-        "b": "Pathloss depends on other factors too..",
-        "c": "Pathloss depends on other factors too..",
-        "d": "Correct answer!"
+        "a": "Antenna height affects the line-of-sight and Fresnel zone clearance, impacting pathloss.",
+        "b": "Increasing the distance generally increases pathloss due to spreading loss.",
+        "c": "Higher carrier frequencies typically experience greater pathloss.",
+        "d": "All these factors influence pathloss."
       },
       "correctAnswer": "d",
       "difficulty": "beginner"
@@ -23,14 +23,14 @@
       "answers": {
         "a": "Buildings",
         "b": "Trees",
-        "c": "moving vehicles",
+        "c": "Moving vehicles",
         "d": "All of the above"
       },
       "explanations": {
-        "a": "Any obstacle leads to attenuation",
-        "b": "Any obstacle leads to attenuation",
-        "c": "Any obstacle leads to attenuation",
-        "d": "Correct answer!"
+        "a": "Buildings can block or reflect radio signals, causing shadowing.",
+        "b": "Dense foliage can attenuate signals.",
+        "c": "Vehicles can temporarily block signals.",
+        "d": "All listed objects can cause shadowing."
       },
       "correctAnswer": "d",
       "difficulty": "beginner"
@@ -44,10 +44,10 @@
         "d": "Causes a fixed reduction in signal power"
       },
       "explanations": {
-        "a": "Different obstacles lead to different attenuations, thus leads to random variations",
-        "b": "Correct answer!",
-        "c": "Different obstacles lead to different attenuations, thus leads to random variations",
-        "d": "Different obstacles lead to different attenuations, thus leads to random variations"
+        "a": "Shadowing is not predictable like free-space loss.",
+        "b": "Shadowing causes random fluctuations in received power due to environmental obstructions.",
+        "c": "It does not consistently decrease pathloss.",
+        "d": "It does not cause a fixed attenuation."
       },
       "correctAnswer": "b",
       "difficulty": "beginner"
@@ -58,13 +58,13 @@
         "a": "700 MHz",
         "b": "2.5 GHz",
         "c": "5000 MHz",
-        "d": "200 GHz"
+        "d": "250 GHz"
       },
       "explanations": {
-        "a": "Correct answer!",
-        "b": "Higher the frequency of the signal, more the attenuation it undergoes",
-        "c": "Higher the frequency of the signal, more the attenuation it undergoes",
-        "d": "Higher the frequency of the signal, more the attenuation it undergoes"
+        "a": "Lower frequencies like 700 MHz generally suffer less pathloss over the same distance.",
+        "b": "Higher frequencies experience greater free-space pathloss.",
+        "c": "Pathloss increases with frequency.",
+        "d": "Very high frequencies suffer significant attenuation."
       },
       "correctAnswer": "a",
       "difficulty": "beginner"
@@ -78,12 +78,63 @@
         "d": "-10 dB"
       },
       "explanations": {
-        "a": "Correct answer!",
-        "b": "Pathloss is the difference of transmitted and the received signal strength",
-        "c": "Pathloss is not the received power, but the difference of the transmitted and received signal strength",
-        "d": "Pathloss is the difference of transmitted and the received signal strength"
+        "a": "Pathloss = Tx power - Rx power = 50 - 40 = 10 dB.",
+        "b": "This would be true if the received power were -40 dBm, not 40 dBm.",
+        "c": "Incorrect subtraction.",
+        "d": "Pathloss cannot be negative in this case."
       },
       "correctAnswer": "a",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "In free-space conditions, pathloss increases approximately with:",
+      "answers": {
+        "a": "The square of the distance between transmitter and receiver",
+        "b": "The square root of the distance",
+        "c": "The cube of the distance",
+        "d": "It does not depend on distance"
+      },
+      "explanations": {
+        "a": "Free-space loss follows the inverse-square law.",
+        "b": "Square root is too slow a rate for free-space loss.",
+        "c": "Cube of the distance is too steep for free-space loss.",
+        "d": "Pathloss does depend on distance."
+      },
+      "correctAnswer": "a",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Which of the following models is commonly used to predict large-scale pathloss?",
+      "answers": {
+        "a": "Hata Model",
+        "b": "Nyquist Model",
+        "c": "Shannon Model",
+        "d": "Doppler Model"
+      },
+      "explanations": {
+        "a": "Hata Model is widely used for large-scale pathloss prediction in various environments.",
+        "b": "Nyquist relates to sampling theory, not pathloss.",
+        "c": "Shannon relates to channel capacity, not pathloss.",
+        "d": "Doppler describes frequency shifts, not pathloss."
+      },
+      "correctAnswer": "a",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "In urban environments, compared to rural environments, pathloss is generally:",
+      "answers": {
+        "a": "Lower due to reflections",
+        "b": "Higher due to obstructions",
+        "c": "The same",
+        "d": "Independent of the environment"
+      },
+      "explanations": {
+        "a": "While reflections can help in some cases, obstructions dominate in urban areas.",
+        "b": "Obstructions such as buildings increase pathloss in urban areas.",
+        "c": "Environment strongly affects pathloss.",
+        "d": "Pathloss depends heavily on the environment."
+      },
+      "correctAnswer": "b",
       "difficulty": "beginner"
     }
   ]
