@@ -40,13 +40,33 @@ $$
 \end{aligned}
 $$
 
+$$
+\begin{aligned}
+    PL(\text{in dB}) =  10\log_{10}K - 10\gamma \log_{10} \frac{d}{d_0}
+\end{aligned}
+$$
 
-## Pathloss with shadowing
-Now, after clearly understanding the concept of pathloss, have you wondered if the pathloss in any direction of the same distance is equal? Not necessarily. This is due to the effect of shadowing! Not just the distance between the $T_{X}$ and $R_{X}$, but also the propogation environment, containing obstacles that lead to absorption, reflection, and scattering etc of the signal leads to an attenuation of the received signal power. This attenuation is a random value. This leads to an additional term in the pathloss equation as follows
+where, $K$ is the pathloss at a reference distance $d_0$.
+ 
+ 
+The above discussion pertains to free-space propagation. In terrestrial wireless networks, however, the presence of multipath components causes the pathloss characteristics to vary across different regions. This variation arises from the constructive and destructive interference of multipath signals at the receiver. To account for such effects, several empirical pathloss models have been developed, including the Okumura, Hata, and COST-231 models. These models incorporate environmental factors, the pathloss exponent, operating frequency, and the heights of the transmitter and receiver antennas to more accurately characterize signal attenuation. 
+
+In this experiment, the Okumura pathloss model is employed to simulate large-scale signal attenuation under realistic terrestrial propagation conditions. The pathloss at a distance d can be expressed using the Okumura model as 
 
 $$
 \begin{aligned}
-    PL(\text{in dB})= 10 \log _{10}\left(\frac{4 \pi d}{\lambda \sqrt{G}}\right)^{2}+\psi
+    PL(d) = L(f_c,d) + A_\mu(f_c,d) - G(h_T) -G(h_R) - G_{AREA}
+\end{aligned}
+$$
+
+where $L(f_c,d)$ is the free space pathloss, $A_\mu(f_c,d)$ is the median attenuation in addition to free space path loss across all environments, $G(h_T)$ and $G(h_R)$ are the transmitetr and reciever height gains and $G_{AREA}$ is the gain of the environment.
+
+## Pathloss with shadowing
+Now, after understanding the concept of pathloss, have you wondered if the pathloss in any direction of the same distance is equal? Not necessarily. This is due to the effect of shadowing! Not just the distance between the $T_{X}$ and $R_{X}$, but also the propogation environment, containing obstacles that lead to absorption, reflection, and scattering etc of the signal leads to an attenuation of the received signal power. This attenuation is a random value. This leads to an additional term in the pathloss equation as follows
+
+$$
+\begin{aligned}
+    PL(\text{in dB})= 10\log_{10}K - 10\gamma \log_{10} \frac{d}{d_0} - \psi_{dB}
 \end{aligned}
 $$
 
@@ -58,7 +78,7 @@ $$
 \end{aligned}
 $$
 
-where $\xi=\frac{10}{\ln 10}$, $\mu_{\psi_{\text{in dB}}}$ is the mean and $\sigma_{\psi_{\text{in dB}}}^{2}$ is the variance.
+where $\varepsilon=\frac{10}{\ln 10}$. $\mu_{\psi_{\text{dB}}}$ is the mean pathloss and mean attenuation due to the obstacles. The mean power varies with distance due to path loss and the fact that average attenuation from objects increases with distance due to the potential for a larger number of attenuating objects. $\sigma_{\psi_{\text{in dB}}}$ is the standard deviation of the environment ranging from four to thirteen.
 
 We can view the visual illustration of Pathloss and shadowing in the below figure.
 
