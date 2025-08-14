@@ -17,6 +17,7 @@ By following these steps and experimenting with different parameter values, you 
 ## Shadowing
 This experiment will simulate how obstacles cause shadowing and degrade signal quality in the communication area. Follow these steps to understand the experiment:
   1) Imagine that there is a transmitter located at the center of the simulation area. This transmitter sends out signals in all directions.The aim is to observe how obstacles interfere with the signal propagation and affect signal strength.
-  2) Place obstacles: To begin, click on any location within the simulation area. By clicking, an obstacle will be generated at the selected location.
-  3) After placing an obstacle, you will notice that the area behind the obstacle becomes reddish. This color change represents the decrease in signal strength due to the obstruction. The reddish areas indicate regions where the signal coverage is weak, meaning the radio waves are blocked or reflected by the obstacle, causing shadowing.
-  4) As you place more obstacles throughout the simulation area, you will notice that the blue areas become smaller and the red areas expand. This indicates that the signal coverage is being increasingly degraded as more obstacles are introduced.
+  2) Enter the input system parameters.
+  3) Use the distance slider to vary the position of the reciever from the transmitter.
+  4) Vary reciever angle and observe that pathloss at a given distance can vary depending on the obstacles due to the effect of shadowing.
+  5) Record points for different input configurations and observe how the total pathloss including shadowing varies with distance.
