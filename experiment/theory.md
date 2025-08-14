@@ -17,7 +17,7 @@ $$
 
 In general, the recieved power $P_r$ is dependent on the following factors:
 - Antenna gains of $T_X$ and $R_X$, $G_t$ and $G_r$ respectively. Antenna gain measures the efficiency of an antenna to focus the signal energy in a specific direction. We can say that a direction-specific antenna(the one with higher G) leads to a increase in $P_r$.
-- Distance between the $T_{x}$ and $R_{x}$, $d$. The recieved power decreases with distance. 
+- Distance between the $T_{X}$ and $R_{X}$, $d$. The recieved power decreases with distance. 
 - Signal wavelength, $\lambda$. Signals with higher wavelengths travel effectively over longer distances and can also bend around obstacles due to their low carrier frequency. This indicates that $P_r$ increases.
 
 From the Friis free-space transmission equation,
@@ -55,11 +55,11 @@ In this experiment, the Okumura pathloss model is employed to simulate large-sca
 
 $$
 \begin{aligned}
-    PL(d) = L(f_c,d) + A_\mu(f_c,d) - G(h_T) -G(h_R) - G_{AREA}
+    PL(d) = L(f_c,d) + A_\mu(f_c,d) - G(h_t) -G(h_r) - G_{AREA}
 \end{aligned}
 $$
 
-where $L(f_c,d)$ is the free space pathloss, $A_\mu(f_c,d)$ is the median attenuation in addition to free space path loss across all environments, $G(h_T)$ and $G(h_R)$ are the transmitetr and reciever height gains and $G_{AREA}$ is the gain of the environment.
+where $L(f_c,d)$ is the free space pathloss, $A_\mu(f_c,d)$ is the median attenuation in addition to free space path loss across all environments, $G(h_t)$ and $G(h_r)$ are the transmitetr and reciever height gains and $G_{AREA}$ is the gain of the environment.
 
 ## Pathloss with shadowing
 Now, after understanding the concept of pathloss, have you wondered if the pathloss in any direction of the same distance is equal? Not necessarily. This is due to the effect of shadowing! Not just the distance between the $T_{X}$ and $R_{X}$, but also the propogation environment, containing obstacles that lead to absorption, reflection, and scattering etc of the signal leads to an attenuation of the received signal power. This attenuation is a random value. This leads to an additional term in the pathloss equation as follows
