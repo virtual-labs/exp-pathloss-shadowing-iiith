@@ -104,23 +104,6 @@
       "difficulty": "beginner"
     },
     {
-      "question": "Which of the following models is commonly used to predict large-scale pathloss?",
-      "answers": {
-        "a": "Hata Model",
-        "b": "Nyquist Model",
-        "c": "Shannon Model",
-        "d": "Doppler Model"
-      },
-      "explanations": {
-        "a": "Hata Model is widely used for large-scale pathloss prediction in various environments.",
-        "b": "Nyquist relates to sampling theory, not pathloss.",
-        "c": "Shannon relates to channel capacity, not pathloss.",
-        "d": "Doppler describes frequency shifts, not pathloss."
-      },
-      "correctAnswer": "a",
-      "difficulty": "beginner"
-    },
-    {
       "question": "In urban environments, compared to rural environments, pathloss is generally:",
       "answers": {
         "a": "Lower due to reflections",
