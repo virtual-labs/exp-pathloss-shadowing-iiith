@@ -83,20 +83,23 @@ function initializeTask1Simulation() {
     }
 
     // UPDATED: This function now ONLY handles the transmitter antenna
-    function updateTxAntennaImage(height, imgElement) {
-        if (!imgElement) return;
-        if (height <= 50) {
-            imgElement.src = './images/antenna-small.svg';
-            imgElement.style.width = `${height + 30}px`;
-        } else if (height <= 100) {
-            imgElement.src = './images/antenna-medium.svg';
-            imgElement.style.width = '80px';
-        } else {
-            imgElement.src = './images/antenna-large.svg';
-            imgElement.style.width = '100px';
-        }
-        imgElement.style.height = 'auto';
-    }
+    function updateTxAntennaImage(height, imgElement) {
+        if (!imgElement) return;
+
+        // New breakpoints for the 30-1000m range
+        if (height <= 150) {
+            imgElement.src = './images/antenna-small.svg';
+            // Using a fixed width for consistency
+            imgElement.style.width = '60px';
+        } else if (height <= 500) {
+            imgElement.src = './images/antenna-medium.svg';
+            imgElement.style.width = '80px';
+        } else { // height > 500
+            imgElement.src = './images/antenna-large.svg';
+            imgElement.style.width = '100px';
+        }
+        imgElement.style.height = 'auto';
+    }
 
     // NEW: This function handles the receiver antenna according to the new rules
     function updateRxAntennaImage(height, imgElement) {
@@ -124,14 +127,21 @@ function initializeTask1Simulation() {
     }
 
     function updateReceiverPosition() {
-        const distance_km = parseInt(slider.value);
-        const experimentPadding = 20; // A fixed padding value
-        const experimentWidth = document.getElementById('experiment-area').offsetWidth;
-        const receiverWidth = receiver.offsetWidth;
-        const availableWidth = experimentWidth - (2 * experimentPadding);
-        const position = experimentPadding + ((distance_km - 1) / (maxDistance - 1)) * availableWidth;
-        receiver.style.left = `${position - (receiverWidth / 2)}px`;
-    }
+        const distance_km = parseInt(slider.value);
+        const experimentWidth = document.getElementById('experiment-area').offsetWidth;
+        const receiverWidth = receiver.offsetWidth;
+        const experimentPadding = 40;
+        
+        // Define a fixed transmitter position (adjust this value as needed)
+        const transmitterRightEdge = experimentWidth * 0.2; // Transmitter occupies first 20% of width
+        
+        // Calculate receiver position in remaining 80% of space
+        const availableWidth = experimentWidth - transmitterRightEdge - (2 * experimentPadding);
+        const receiverPosition = transmitterRightEdge + experimentPadding + 
+                            ((distance_km - 1) / (maxDistance - 1)) * availableWidth;
+        
+        receiver.style.left = `${receiverPosition - (receiverWidth / 2)}px`;
+    }
 
     function updatePathLoss() {
         const distance_km = parseInt(slider.value);
