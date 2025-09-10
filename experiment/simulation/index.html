@@ -20,7 +20,7 @@
 			<div class="tab">
 				<button class="tablinks" onclick="openPart(event, 'task1')" , id="default">Pathloss</button>
 				<!-- <button class="tablinks" onclick="openPart(event, 'task2')">shadowing</button>/ -->
-				<button class="tablinks" onclick="openPart(event, 'task3')">Pathloss and shadowing</button>
+				<button class="tablinks" onclick="openPart(event, 'task3')">Pathloss and Shadowing</button>
 			</div>
 		</div>
 	</div>
@@ -37,7 +37,7 @@
 							<br>
 							<h3>
 								<ol>
-									<li> Enter the Antenna gain G, Carrier frequency fc, Height of the transmitter Ht, Height of the receiver Hr. </li>
+									<li> Enter the Antenna gain G, Carrier frequency f<sub>c</sub>, Height of the transmitter H<sub>t</sub>, Height of the receiver H<sub>r</sub>. </li>
 									<li>Start adjusting the position of the receiver by moving the slider.</li>
 									<li>Click on register to plot the pathloss at the given distance.</li>
 									<li>You can register pathloss for different distances and heights of antenna and observe the graph to understand the pathloss trends.</li>
@@ -61,12 +61,12 @@
 						</div>
 						
 						<div class="form-group">
-							<label for="tx-height"><b>Ht (meters)</b></label>
+							<label for="tx-height"><b>H<sub>t</sub> (meters)</b></label>
 							<input type="number" id="tx-height" min="1" max="150" value="10" step="1" class="form-control">
 						</div>
 						
 						<div class="form-group">
-							<label for="rx-height"><b>Hr (meters)</b></label>
+							<label for="rx-height"><b>H<sub>r</sub> (meters)</b></label>
 							<input type="number" id="rx-height" min="1" max="150" value="10" step="1" class="form-control">
 						</div>
 						
@@ -158,14 +158,14 @@
 										<input type="number" id="G">
 									</div>
 									<div class="fill1">
-										fc(in MHz) <input type="number" id="fc" step="0.1">
+										f<sub>c</sub> (in MHz) <input type="number" id="fc" step="0.1">
 									</div>
 									<div class="fill1">
-										<label for="tx-height">Ht (meters)</label>
+										<label for="tx-height">H<sub>t</sub> (meters)</label>
 										<input type="number" id="tx-height" min="1" max="150" value="10" step="1">
 									</div>
 									<div class="fill1">
-										<label for="rx-height">Hr(meters)</label>
+										<label for="rx-height">H<sub>r</sub> (meters)</label>
 										<input type="number" id="rx-height" min="1" max="150" value="10" step="1">
 									</div>
 								</div>
@@ -359,7 +359,7 @@
 													<h3>Results</h3>
 												
 													<div class="graph-container">
-														<div id="graph_placeholder">Record at least 10 data points to generate the analysis graph</div>
+														<div id="graph_placeholder">Record at least one data point to generate the analysis graph</div>
 														<canvas id="pathlossGraph" style="display: none;"></canvas>
 												</div>
 											
