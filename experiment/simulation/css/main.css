@@ -355,6 +355,66 @@ left: var(--experiment-padding);
 cursor: pointer;
 }
 
+/* === Unified Button Styles for Task 3 === */
+
+/* Base style for all buttons in the group */
+#record_data_btn,
+#auto_generate_btn,
+#randomize_obstacles_btn,
+#reset_session_btn {
+    color: white;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    font-size: 0.9em;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Hover effect for all enabled buttons */
+#record_data_btn:hover:not(:disabled),
+#auto_generate_btn:hover:not(:disabled),
+#randomize_obstacles_btn:hover:not(:disabled),
+#reset_session_btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Primary actions (blue) */
+#record_data_btn,
+#auto_generate_btn {
+    background-color: #3b82f6; /* Blue */
+}
+#record_data_btn:hover:not(:disabled),
+#auto_generate_btn:hover:not(:disabled) {
+    background-color: #2563eb; /* Darker Blue */
+}
+
+/* Neutral action (gray) */
+#randomize_obstacles_btn {
+    background-color: #6b7280; /* Gray */
+}
+#randomize_obstacles_btn:hover:not(:disabled) {
+    background-color: #4b5563; /* Darker Gray */
+}
+
+/* Warning/destructive action (red) */
+#reset_session_btn {
+    background-color: #ef4444; /* Red */
+}
+#reset_session_btn:hover:not(:disabled) {
+    background-color: #dc2626; /* Darker Red */
+}
+
+/* Style for all disabled buttons */
+#record_data_btn:disabled,
+#auto_generate_btn:disabled {
+    background-color: #9ca3af; /* Light Gray */
+    cursor: not-allowed;
+}
+
 .input-group {
 display: flex;
 flex-direction: column;
