@@ -1,19 +1,19 @@
 function openPart(evt, name){
-    var i, tabcontent, tablinks;
-    tabcontent = document.getElementsByClassName("tabcontent");
-    for (i = 0; i < tabcontent.length; i++) {
-      tabcontent[i].style.display = "none";
-    }
-    tablinks = document.getElementsByClassName("tablinks");
-    for (i = 0; i < tablinks.length; i++) {
-      tablinks[i].className = tablinks[i].className.replace(" active", "");
-    }
-    document.getElementById(name).style.display = "block";
-    evt.currentTarget.className += " active";
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(name).style.display = "block";
+    evt.currentTarget.className += " active";
 
 }
 function startup() {
-    document.getElementById("default").click();
+    document.getElementById("default").click();
 }
 
 window.onload = startup;
@@ -376,16 +376,10 @@ updatePathLoss();
 }
 
 
-
-
-
-
-
-
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~task_3~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-function initializeTask3Simulation(){
+function initializeTask3Simulation() {
     const kInput = document.getElementById('k_val');
     const gammaInput = document.getElementById('gamma_val');
     const d0Input = document.getElementById('d0_val');
@@ -396,7 +390,6 @@ function initializeTask3Simulation(){
     const angleDisplay = document.getElementById('receiver_angle_val');
     const randomizeBtn = document.getElementById('randomize_obstacles_btn');
     const recordBtn = document.getElementById('record_data_btn');
-    const generateGraphBtn = document.getElementById('generate_graph_btn');
     const resetBtn = document.getElementById('reset_session_btn');
     const autoGenerateBtn = document.getElementById('auto_generate_btn');
     const recordCountDisplay = document.getElementById('record_count_display');
@@ -415,7 +408,6 @@ function initializeTask3Simulation(){
     let obstacles = [];
     let currentK, currentGamma, currentD0, currentRxDistance_km, currentRxAngleRad;
     let recordedData = [];
-    const MIN_RECORDINGS = 10;
     const MAX_RECORDINGS = 50;
 
     // Simulation Constants
@@ -427,7 +419,7 @@ function initializeTask3Simulation(){
 
     const TX_ICON = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzY2N2VlYSI+PHBhdGggZD0iTTEyIDNsNCA0aC0zdjEwaC0yVjdIOFs0LTR6TTQgOWgzdjJINGMtMnptMCA0aDN2Mkg0di0yem0xNi00aC0zdjJoM3YtMnptMCA0aC0zdjJoM3YtMnoiLz48L3N2Zz4=';
     const RX_ICON = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzY2N2VlYSI+PHBhdGggZD0iTTE2IDFIOEM2LjM0IDEgNSAyLjM0IDUgNHYxNmMwIDEuNjYgMS4zNCAzIDMgM2g4YzEuNjYgMCAzLTEuMzQgMy0zVjRjMC0xLjY2LTEuMzQtMy0zLTN6TTE0IDIxaC00di0xaDR2MXptMS4yNS0zSDguNzVWNGg2LjV2MTR6Ii8+PC9zdmc+';
-    
+
     let txImage, rxImage;
     const TX_IMG_SIZE = 48;
     const RX_IMG_SIZE = 28;
@@ -437,20 +429,14 @@ function initializeTask3Simulation(){
             txImage = new Image();
             rxImage = new Image();
             let loadedCount = 0;
-            
             const onImageLoad = () => {
                 loadedCount++;
-                if (loadedCount === 2) {
-                    resolve();
-                }
+                if (loadedCount === 2) resolve();
             };
-            
             txImage.onload = onImageLoad;
             rxImage.onload = onImageLoad;
-            
             txImage.onerror = onImageLoad;
             rxImage.onerror = onImageLoad;
-            
             txImage.src = TX_ICON;
             rxImage.src = RX_ICON;
         });
@@ -463,13 +449,25 @@ function initializeTask3Simulation(){
         readAllInputs();
         calculateWorldScale();
         placeObstacles();
+        updateIdealCurve(); // Generate ideal curve on load
         updateSimulation();
         updateUIState();
     }
 
     function setupEventListeners() {
-        [kInput, gammaInput, d0Input, distanceSlider, angleSlider].forEach(el => {
-            el.addEventListener('input', () => { readAllInputs(); updateSimulation(); });
+        [kInput, gammaInput, d0Input].forEach(el => {
+            el.addEventListener('input', () => {
+                readAllInputs();
+                updateSimulation();
+                updateIdealCurve(); // Update ideal curve when params change
+            });
+        });
+
+        [distanceSlider, angleSlider].forEach(el => {
+            el.addEventListener('input', () => {
+                readAllInputs();
+                updateSimulation();
+            });
         });
 
         densityInput.addEventListener('input', () => {
@@ -484,11 +482,10 @@ function initializeTask3Simulation(){
         });
 
         recordBtn.addEventListener('click', recordDataPoint);
-        generateGraphBtn.addEventListener('click', generateGraph);
         resetBtn.addEventListener('click', resetSession);
         autoGenerateBtn.addEventListener('click', autoGenerateData);
     }
-    
+
     function readAllInputs() {
         currentK = parseFloat(kInput.value);
         currentGamma = parseFloat(gammaInput.value);
@@ -498,104 +495,86 @@ function initializeTask3Simulation(){
         currentRxAngleRad = parseFloat(angleSlider.value) * Math.PI / 180;
         angleDisplay.textContent = (currentRxAngleRad * 180 / Math.PI).toFixed(0);
     }
-    
+
     function updateUIState() {
         recordCountDisplay.textContent = `${recordedData.length} / ${MAX_RECORDINGS}`;
         recordBtn.disabled = recordedData.length >= MAX_RECORDINGS;
         autoGenerateBtn.disabled = recordedData.length >= MAX_RECORDINGS;
-        generateGraphBtn.disabled = recordedData.length < MIN_RECORDINGS;
     }
-    
+
     function recordDataPoint() {
         if (recordedData.length >= MAX_RECORDINGS) return;
         readAllInputs();
         const { prPtDb } = calculateCurrentSignal();
         recordedData.push({ x: currentRxDistance_km, y: prPtDb });
         updateUIState();
+        generateGraph(); // Immediately plot the new point
     }
-    
+
     function autoGenerateData() {
         const NUM_AUTO_POINTS = 50;
         const min_dist = parseFloat(distanceSlider.min);
         const max_dist = parseFloat(distanceSlider.max);
-        
         recordedData = [];
-
         for (let i = 0; i < NUM_AUTO_POINTS; i++) {
             if (recordedData.length >= MAX_RECORDINGS) break;
-
             const randomDist_km = Math.random() * (max_dist - min_dist) + min_dist;
             const randomAngle_rad = Math.random() * 2 * Math.PI;
-
             const { prPtDb } = calculateSignalAtPoint(randomDist_km, randomAngle_rad);
             recordedData.push({ x: randomDist_km, y: prPtDb });
         }
-        
         updateUIState();
-        if (recordedData.length >= MIN_RECORDINGS) {
-            generateGraph();
-        }
+        generateGraph();
     }
-
-    function generateGraph() {
-        if (recordedData.length < MIN_RECORDINGS) return;
-        
-        graphPlaceholder.style.display = 'none';
-        graphCanvas.style.display = 'block';
-
-        // --- CHANGE: DYNAMIC FLOOR CALCULATION ---
-        // 1. Find the minimum Pr/Pt value (most negative) from the recorded data.
-        const minPrPt = Math.min(...recordedData.map(p => p.y));
-
-        // 2. Calculate the floor by rounding this minimum value down to the next multiple of 20.
-        //    (e.g., -153 becomes -160, -161 becomes -180).
-        //    A fallback to -180 is used if data is empty or invalid.
-        const yAxisFloor = isFinite(minPrPt) ? Math.floor(minPrPt / 20) * 20 : -180;
-
-        // 3. Create a new dataset where values are "clamped" or "capped" at the calculated floor.
-        const cappedData = recordedData.map(point => ({
-            x: point.x,
-            y: Math.max(point.y, yAxisFloor)
-        }));
-        const sortedCappedData = [...cappedData].sort((a, b) => a.x - b.x);
-        
-        // Update the chart with the capped data.
-        pathlossChart.data.datasets[1].data = sortedCappedData;
-
-        // Update the ideal pathloss line (this is not capped).
+    
+    function updateIdealCurve() {
+        if (!pathlossChart) return;
+        readAllInputs();
         const meanPrPtData = [];
         const minD = parseFloat(distanceSlider.min);
         const maxD = parseFloat(distanceSlider.max);
         for (let dist = minD; dist <= maxD; dist += 0.1) {
+            if (dist === 0) continue;
             const meanPl = calculateMeanPathloss(dist, currentK, currentGamma, currentD0);
             meanPrPtData.push({ x: dist, y: -meanPl });
         }
         pathlossChart.data.datasets[0].data = meanPrPtData;
-        
-        // 4. Update the y-axis of the chart to use the new dynamic floor.
-        pathlossChart.options.scales.y.min = yAxisFloor;
-        pathlossChart.options.scales.y.max = -40; // Keep a fixed ceiling for consistency.
-
         pathlossChart.update();
     }
-    
+
+    function generateGraph() {
+        if (recordedData.length === 0) {
+            graphPlaceholder.style.display = 'flex';
+            graphCanvas.style.display = 'none';
+            return;
+        }
+
+        graphPlaceholder.style.display = 'none';
+        graphCanvas.style.display = 'block';
+
+        const minPrPt = Math.min(...recordedData.map(p => p.y));
+        const yAxisFloor = isFinite(minPrPt) ? Math.floor(minPrPt / 20) * 20 : -180;
+        
+        pathlossChart.data.datasets[1].data = recordedData;
+        pathlossChart.options.scales.y.min = yAxisFloor;
+        pathlossChart.update();
+    }
+
     function resetSession() {
         recordedData = [];
         if (pathlossChart) {
             pathlossChart.data.datasets[1].data = [];
-            pathlossChart.data.datasets[0].data = [];
-            // Reset y-axis to default
             pathlossChart.options.scales.y.min = -180;
-            pathlossChart.options.scales.y.max = -40;
             pathlossChart.update();
         }
+        updateIdealCurve();
         graphPlaceholder.style.display = 'flex';
         graphCanvas.style.display = 'none';
         updateUIState();
         placeObstacles();
         updateSimulation();
     }
-    
+
     function calculateSignalAtPoint(distance_km, angle_rad) {
         const rxRadius_px = distance_km * worldScale_pxPerKm;
         const rxPos_px = {
@@ -604,12 +583,7 @@ function initializeTask3Simulation(){
         };
         const meanPlDb = calculateMeanPathloss(distance_km, currentK, currentGamma, currentD0);
         const { shadowingDb, isOccluded } = calculateShadowingAtPosition(rxPos_px);
-        
-        // CHANGE: The hardcoded pathloss cap has been removed from this function.
-        // It now returns the "true" calculated pathloss, and the capping is
-        // handled visually in the generateGraph() function.
         const totalPlDb = meanPlDb + shadowingDb;
-
         const prPtDb = -totalPlDb;
         return { totalPlDb, prPtDb, isOccluded };
     }
@@ -624,7 +598,6 @@ function initializeTask3Simulation(){
         outPrPt.textContent = prPtDb.toFixed(2);
         outStatus.textContent = isOccluded ? "Occluded" : "Line of Sight";
         statusIndicator.className = `status-indicator ${isOccluded ? 'status-occluded' : 'status-los'}`;
-        
         const currentRxRadius_px = currentRxDistance_km * worldScale_pxPerKm;
         const rxPos_px = {
             x: txPos_px.x + currentRxRadius_px * Math.cos(currentRxAngleRad),
@@ -632,61 +605,55 @@ function initializeTask3Simulation(){
         };
         drawSimulationCanvas(rxPos_px, currentRxRadius_px, isOccluded);
     }
-    
+
     function initializeChart() {
         pathlossChart = new Chart(graphCanvas, {
             type: 'scatter',
             data: {
-                datasets: [
-                    { 
-                        label: 'Ideal Pathloss (No Fading)', data: [], borderColor: '#3498db',
-                        borderDash: [8, 4], type: 'line', fill: false, pointRadius: 0, borderWidth: 3,
-                    },
-                    {
-                        label: 'Recorded Pr/Pt (with Fading)', 
-                        data: [], 
-                        borderColor: '#e74c3c', 
-                        backgroundColor: '#e74c3c', 
-                        pointRadius: 4,
-                        borderWidth: 2,
-                        showLine: false,
-                        type: 'line' 
-                    }
-                ]
+                datasets: [{
+                    label: 'Ideal Pathloss (No Fading)',
+                    data: [],
+                    borderColor: '#3498db',
+                    borderDash: [8, 4],
+                    type: 'line',
+                    fill: false,
+                    pointRadius: 0,
+                    borderWidth: 3,
+                }, {
+                    label: 'Recorded Pr/Pt (with Fading)',
+                    data: [],
+                    borderColor: '#e74c3c',
+                    backgroundColor: '#e74c3c',
+                    pointRadius: 4,
+                    borderWidth: 2,
+                    showLine: false,
+                }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                layout: {
-                    padding: 20
-                },
+                layout: { padding: 20 },
                 plugins: { legend: { labels: { usePointStyle: true, font: { size: 12 } } } },
                 scales: {
                     x: {
                         type: 'linear',
                         title: { display: true, text: 'Distance (km)', font: { size: 16, weight: '600' } },
-                        min: 0, 
+                        min: 0,
                         max: 5
                     },
-                    y: { 
+                    y: {
                         title: { display: true, text: 'Pr/Pt (dB)', font: { size: 16, weight: '600' } },
-                        // Default min/max, will be updated dynamically by generateGraph()
                         max: -40,
                         min: -180,
                     }
                 }
             }
         });
-    }        
+    }
 
     function poissonRandom(lambda) {
-        let L = Math.exp(-lambda);
-        let k = 0;
-        let p = 1;
-        do {
-            k++;
-            p *= Math.random();
-        } while (p > L);
+        let L = Math.exp(-lambda), k = 0, p = 1;
+        do { k++; p *= Math.random(); } while (p > L);
         return k - 1;
     }
 
@@ -709,29 +676,28 @@ function initializeTask3Simulation(){
         return mean + stdDev * val;
     }
 
-    function calculateWorldScale() { 
-        worldScale_pxPerKm = maxCanvasDisplayRadius_px / parseFloat(distanceSlider.max); 
+    function calculateWorldScale() {
+        worldScale_pxPerKm = maxCanvasDisplayRadius_px / parseFloat(distanceSlider.max);
     }
-    
+
     function placeObstacles() {
         obstacles = [];
-        const densityPerKm2 = parseFloat(densityInput.value); 
+        const densityPerKm2 = parseFloat(densityInput.value);
         const maxSimDistance_km = parseFloat(distanceSlider.max);
         const areaKm2 = Math.PI * Math.pow(maxSimDistance_km, 2);
         const lambda = densityPerKm2 * areaKm2;
         const numObs = poissonRandom(lambda);
-        
         for (let i = 0; i < numObs; i++) {
-            const obsDistFromTx_km = Math.sqrt(Math.random()) * maxSimDistance_km; 
+            const obsDistFromTx_km = Math.sqrt(Math.random()) * maxSimDistance_km;
             const obsAngleRad = Math.random() * 2 * Math.PI;
-            const obsRadius_km = (Math.random() * 8 * 0.6 + 8 * 0.2) / 1000; 
+            const obsRadius_km = (Math.random() * 8 * 0.6 + 8 * 0.2) / 1000;
             const obsX_km = obsDistFromTx_km * Math.cos(obsAngleRad);
-            const obsY_km = obsDistFromTx_km * Math.sin(obsAngleRad); 
+            const obsY_km = obsDistFromTx_km * Math.sin(obsAngleRad);
             const attenuation = Math.max(0.5, 8 + (Math.random() - 0.5) * 2 * 5);
             obstacles.push({
                 x_km: obsX_km, y_km: obsY_km, radius_km: obsRadius_km, attenuationDb: attenuation,
                 x_px: txPos_px.x + obsX_km * worldScale_pxPerKm, y_px: txPos_px.y + obsY_km * worldScale_pxPerKm,
-                radius_px: Math.max(2, obsRadius_km * worldScale_pxPerKm), 
+                radius_px: Math.max(2, obsRadius_km * worldScale_pxPerKm),
                 color: `hsl(${30 + (attenuation / 20) * 30}, 70%, ${60 - (attenuation / 20) * 20}%)`
             });
         }
@@ -742,9 +708,7 @@ function initializeTask3Simulation(){
         let occluded = false;
         const FADING_VARIANCE = 15;
         const FADING_STD_DEV = Math.sqrt(FADING_VARIANCE);
-
-        fadingEffectDb += gaussianRandom(0, 2); 
-
+        fadingEffectDb += gaussianRandom(0, 2);
         for (const obs of obstacles) {
             const obsCenter_px = { x: obs.x_px, y: obs.y_px };
             if (isLineSegmentIntersectingCircle(txPos_px, rxPos_px, obsCenter_px, obs.radius_px ** 2)) {
@@ -752,7 +716,6 @@ function initializeTask3Simulation(){
                 fadingEffectDb += gaussianRandom(0, FADING_STD_DEV);
             }
         }
-        
         return { shadowingDb: fadingEffectDb, isOccluded: occluded };
     }
 
@@ -767,38 +730,32 @@ function initializeTask3Simulation(){
         let closestX = P1.x + t * dX; let closestY = P1.y + t * dY;
         return ((C.x - closestX) ** 2 + (C.y - closestY) ** 2) <= R_sq;
     }
-    
+
     function drawSimulationCanvas(rxPos_px, currentRxRadius_px, isOccluded) {
         simCtx.clearRect(0, 0, canvasWidth, canvasHeight);
-        
         simCtx.strokeStyle = 'rgba(74, 105, 189, 0.3)'; simCtx.lineWidth = 1; simCtx.setLineDash([3, 3]);
         for (let i = 1; i <= 5; i += 1) {
-            const r = i * worldScale_pxPerKm; 
-            simCtx.beginPath(); 
-            simCtx.arc(txPos_px.x, txPos_px.y, r, 0, 2 * Math.PI); 
+            const r = i * worldScale_pxPerKm;
+            simCtx.beginPath();
+            simCtx.arc(txPos_px.x, txPos_px.y, r, 0, 2 * Math.PI);
             simCtx.stroke();
         }
-        
         simCtx.setLineDash([]); simCtx.beginPath(); simCtx.arc(txPos_px.x, txPos_px.y, currentRxRadius_px, 0, 2 * Math.PI);
         simCtx.strokeStyle = isOccluded ? 'rgba(255, 87, 34, 0.8)' : 'rgba(76, 175, 80, 0.8)'; simCtx.lineWidth = 2; simCtx.setLineDash([5, 5]); simCtx.stroke(); simCtx.setLineDash([]);
-        
         obstacles.forEach(obs => {
             simCtx.fillStyle = obs.color; simCtx.fillRect(obs.x_px - obs.radius_px, obs.y_px - obs.radius_px, obs.radius_px * 2, obs.radius_px * 2);
         });
-
-        if(txImage && txImage.complete) {
+        if (txImage && txImage.complete) {
             simCtx.drawImage(txImage, txPos_px.x - TX_IMG_SIZE / 2, txPos_px.y - TX_IMG_SIZE / 2, TX_IMG_SIZE, TX_IMG_SIZE);
         }
-
-        if(rxImage && rxImage.complete) {
+        if (rxImage && rxImage.complete) {
             simCtx.drawImage(rxImage, rxPos_px.x - RX_IMG_SIZE / 2, rxPos_px.y - RX_IMG_SIZE / 2, RX_IMG_SIZE, RX_IMG_SIZE);
         }
-        
-        simCtx.beginPath(); 
-        simCtx.moveTo(txPos_px.x, txPos_px.y); 
+        simCtx.beginPath();
+        simCtx.moveTo(txPos_px.x, txPos_px.y);
         simCtx.lineTo(rxPos_px.x, rxPos_px.y);
-        simCtx.strokeStyle = isOccluded ? '#ff5722' : '#4caf50'; 
-        simCtx.lineWidth = 3; 
+        simCtx.strokeStyle = isOccluded ? '#ff5722' : '#4caf50';
+        simCtx.lineWidth = 3;
         simCtx.stroke();
     }
 
