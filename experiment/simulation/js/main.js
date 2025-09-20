@@ -143,23 +143,25 @@ function initializeTask1Simulation() {
         receiver.style.left = `${receiverPosition - (receiverWidth / 2)}px`;
     }
 
-    function updatePathLoss() {
-        const distance_km = parseInt(slider.value);
-        const G = parseFloat(document.getElementById("G").value) || 0;
-        const txHeight = parseInt(txHeightInput.value) || 30;
-        const rxHeight = parseInt(rxHeightInput.value) || 1;
-        const fc_mhz = parseFloat(document.getElementById("fc").value) || 150;
+// 1. Update the updatePathLoss function to display distance in km and show negative pathloss
+function updatePathLoss() {
+    const distance_km = parseInt(slider.value);
+    const G = parseFloat(document.getElementById("G").value) || 0;
+    const txHeight = parseInt(txHeightInput.value) || 30;
+    const rxHeight = parseInt(rxHeightInput.value) || 1;
+    const fc_mhz = parseFloat(document.getElementById("fc").value) || 150;
 
-        // Convert units for calculation
-        const distance_m = distance_km * 1000;
-        const fc_hz = fc_mhz * 1e6;
+    // Convert units for calculation
+    const distance_m = distance_km * 1000;
+    const fc_hz = fc_mhz * 1e6;
 
-        // Update display with KM
-        distanceDisplay.textContent = `${distance_km} km`;
-        const pathLoss = calculatePathLoss(G, distance_m, fc_hz, txHeight, rxHeight).toFixed(2);
-        pathLossDisplay.textContent = pathLoss;
-        updateReceiverPosition();
-    }
+    // Update display with KM
+    distanceDisplay.textContent = `${distance_km} km`;
+    const pathLoss = calculatePathLoss(G, distance_m, fc_hz, txHeight, rxHeight);
+    // Display negative pathloss
+    pathLossDisplay.textContent = (-pathLoss).toFixed(2);
+    updateReceiverPosition();
+}
 
 function showNotification(message, isError = false) {
     const notification = document.getElementById('notification');
@@ -172,179 +174,182 @@ function showNotification(message, isError = false) {
     }, 3000);
 }
 
+// 2. Update the registerValues function to use negative pathloss and km for distance
 function registerValues() {
-    const distance = parseInt(slider.value);
-    const txHeight = parseInt(txHeightInput.value) || 1;
-    const rxHeight = parseInt(rxHeightInput.value) || 1;
-    const pathLoss = parseFloat(pathLossDisplay.textContent);
+    const distance = parseInt(slider.value); // This is already in km
+    const txHeight = parseInt(txHeightInput.value) || 1;
+    const rxHeight = parseInt(rxHeightInput.value) || 1;
+    const pathLossNegative = parseFloat(pathLossDisplay.textContent); // This is now negative
 
-    // Find existing curve for current height configuration
-    let curveIndex = curves.findIndex(curve =>
-        curve.txHeight === txHeight && curve.rxHeight === rxHeight
-    );
+    // Find existing curve for current height configuration
+    let curveIndex = curves.findIndex(curve =>
+        curve.txHeight === txHeight && curve.rxHeight === rxHeight
+    );
 
-    if (curveIndex === -1) {
-        // Create new curve if height configuration doesn't exist
-        if (curves.length >= 5) {
-            showNotification("Maximum of 5 different height configurations reached!", true);
-            return;
-        }
-        curves.push({
-            txHeight,
-            rxHeight,
-            dataPoints: [],
-            color: `hsl(${curves.length * 60}, 70%, 50%)`  // Different color for each curve
-        });
-        curveIndex = curves.length - 1;
-    }
+    if (curveIndex === -1) {
+        // Create new curve if height configuration doesn't exist
+        if (curves.length >= 5) {
+            showNotification("Maximum of 5 different height configurations reached!", true);
+            return;
+        }
+        curves.push({
+            txHeight,
+            rxHeight,
+            dataPoints: [],
+            color: `hsl(${curves.length * 60}, 70%, 50%)` // Different color for each curve
+        });
+        curveIndex = curves.length - 1;
+    }
 
-    let curve = curves[curveIndex];
-    // Check if we already have a measurement at this distance for this curve
-    const existingPointIndex = curve.dataPoints.findIndex(point => point.distance === distance);
-    if (existingPointIndex !== -1) {
-        showNotification("A measurement at this distance already exists for these heights!", true);
-        return;
-    }
+    let curve = curves[curveIndex];
+    // Check if we already have a measurement at this distance for this curve
+    const existingPointIndex = curve.dataPoints.findIndex(point => point.distance === distance);
+    if (existingPointIndex !== -1) {
+        showNotification("A measurement at this distance already exists for these heights!", true);
+        return;
+    }
 
-    // Add new point and sort by distance
-    curve.dataPoints.push({ distance, pathLoss });
-    curve.dataPoints.sort((a, b) => a.distance - b.distance);
+    // Add new point and sort by distance
+    curve.dataPoints.push({ distance, pathLoss: pathLossNegative });
+    curve.dataPoints.sort((a, b) => a.distance - b.distance);
 
-    // Update table
-    updateTable();
-    showNotification(`Registered: Distance=${distance}m, Path Loss=${pathLoss}dB (Tx=${txHeight}m, Rx=${rxHeight}m)`);
+    // Update table
+    updateTable();
+    showNotification(`Registered: Distance=${distance}km, Path Loss=${pathLossNegative}dB (Tx=${txHeight}m, Rx=${rxHeight}m)`);
 
-    // Update plot
-    plotGraph();
+    // Update plot
+    plotGraph();
 }
 
+// 3. Update the table headers and chart axes labels
 function updateTable() {
-    valuesTableBody.innerHTML = '';
-    curves.forEach((curve, index) => {
-        const headerRow = document.createElement('tr');
-        headerRow.innerHTML = `
-            <td colspan="3" style="background-color: ${curve.color}20">
-                Tx Height: ${curve.txHeight}m, Rx Height: ${curve.rxHeight}m
-            </td>
-        `;
-        valuesTableBody.appendChild(headerRow);
-        curve.dataPoints.forEach(point => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${point.distance}</td>
-                <td>${point.pathLoss}</td>
-            `;
-            valuesTableBody.appendChild(row);
-        });
-    });
+    valuesTableBody.innerHTML = '';
+    curves.forEach((curve, index) => {
+        const headerRow = document.createElement('tr');
+        headerRow.innerHTML = `
+            <td colspan="3" style="background-color: ${curve.color}20">
+                Tx Height: ${curve.txHeight}m, Rx Height: ${curve.rxHeight}m
+            </td>
+        `;
+        valuesTableBody.appendChild(headerRow);
+        curve.dataPoints.forEach(point => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${point.distance}</td>
+                <td>${point.pathLoss}</td>
+            `;
+            valuesTableBody.appendChild(row);
+        });
+    });
 }
 
+// 4. Update the chart configuration to show correct labels
 function plotGraph() {
-    if (curves.length === 0) {
-        showNotification("No data to plot. Please register values first!", true);
-        return;
-    }
-    const ctx = chartCanvas.getContext('2d');
-    ctx.fillStyle = 'white';
-    ctx.fillRect(0, 0, chartCanvas.width, chartCanvas.height);
+    if (curves.length === 0) {
+        showNotification("No data to plot. Please register values first!", true);
+        return;
+    }
+    const ctx = chartCanvas.getContext('2d');
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, chartCanvas.width, chartCanvas.height);
 
-    if (Chart.getChart(chartCanvas)) {
-        Chart.getChart(chartCanvas).destroy();
-    }
+    if (Chart.getChart(chartCanvas)) {
+        Chart.getChart(chartCanvas).destroy();
+    }
 
-    // Set canvas background to white
-    chartCanvas.style.backgroundColor = 'white';
-    const datasets = curves.map(curve => ({
-    label: `Tx=${curve.txHeight}m, Rx=${curve.rxHeight}m`,
-    data: curve.dataPoints.map(point => ({
-        x: point.distance,
-        y: point.pathLoss
-    })),
-    borderColor: curve.color,
-    backgroundColor: 'rgba(118, 223, 237, 0.25)', // Transparent background
-    borderWidth: 2,
-    fill: true
-}));
+    // Set canvas background to white
+    chartCanvas.style.backgroundColor = 'white';
+    const datasets = curves.map(curve => ({
+        label: `Tx=${curve.txHeight}m, Rx=${curve.rxHeight}m`,
+        data: curve.dataPoints.map(point => ({
+            x: point.distance,
+            y: point.pathLoss
+        })),
+        borderColor: curve.color,
+        backgroundColor: 'rgba(118, 223, 237, 0.25)', // Transparent background
+        borderWidth: 2,
+        fill: true
+    }));
 
-    new Chart(chartCanvas, {
-        type: 'line',
-        data: {
-            datasets,
-            // Add explicit background color for the chart area
-            backgroundColor: 'white'
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                x: {
-                    type: 'linear',
-                    title: {
-                        display: true,
-                        text: 'Distance (m)',
-                        color: '#333'
-                    },
-                    grid: {
-                        color: 'rgba(0, 0, 0, 0.1)',
-                        drawBackground: true
-                    },
-                    ticks: {
-                        color: '#333'
-                    }
-                },
-                y: {
-                    title: {
-                        display: true,
-                        text: 'Path Loss (dB)',
-                        color: '#333'
-                    },
-                    grid: {
-                        color: 'rgba(0, 0, 0, 0.1)',
-                        drawBackground: true
-                    },
-                    ticks: {
-                        color: '#333'
-                    }
-                }
-            },
-            plugins: {
-                legend: {
-                    labels: {
-                        color: '#333',
-                        usePointStyle: true,
-                        padding: 20
-                    },
-                    backgroundColor: 'white'
-                },
-                tooltip: {
-                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                    titleColor: '#333',
-                    bodyColor: '#333',
-                    borderColor: '#ddd',
-                    borderWidth: 1
-                }
-            },
-            layout: {
-                padding: {
-                    top: 10,
-                    right: 20,
-                    bottom: 10,
-                    left: 10
-                }
-            }
-        },
-        plugins: [{
-            id: 'customCanvasBackgroundColor',
-            beforeDraw: (chart, args, options) => {
-                const {ctx} = chart;
-                ctx.save();
-                ctx.globalCompositeOperation = 'destination-over';
-                ctx.fillStyle = 'white';
-                ctx.fillRect(0, 0, chart.width, chart.height);
-                ctx.restore();
-            }
-        }]
-    });
+    new Chart(chartCanvas, {
+        type: 'line',
+        data: {
+            datasets,
+            // Add explicit background color for the chart area
+            backgroundColor: 'white'
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    type: 'linear',
+                    title: {
+                        display: true,
+                        text: 'Distance (km)', // Changed from meters to km
+                        color: '#333'
+                    },
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.1)',
+                        drawBackground: true
+                    },
+                    ticks: {
+                        color: '#333'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Path Loss (dB)', // This will now show negative values
+                        color: '#333'
+                    },
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.1)',
+                        drawBackground: true
+                    },
+                    ticks: {
+                        color: '#333'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#333',
+                        usePointStyle: true,
+                        padding: 20
+                    },
+                    backgroundColor: 'white'
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                    titleColor: '#333',
+                    bodyColor: '#333',
+                    borderColor: '#ddd',
+                    borderWidth: 1
+                }
+            },
+            layout: {
+                padding: {
+                    top: 10,
+                    right: 20,
+                    bottom: 10,
+                    left: 10
+                }
+            }
+        },
+        plugins: [{
+            id: 'customCanvasBackgroundColor',
+            beforeDraw: (chart, args, options) => {
+                const {ctx} = chart;
+                ctx.save();
+                ctx.globalCompositeOperation = 'destination-over';
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, chart.width, chart.height);
+                ctx.restore();
+            }
+        }]
+    });
 }
 
     // Event Listeners
