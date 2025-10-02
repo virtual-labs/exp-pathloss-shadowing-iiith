@@ -665,8 +665,8 @@ to {
   background-color: #f0f0f0;
   border: 2px solid #98CB3B;
   border-radius: 10px;
-  max-height: 500px;
-  min-width: 480px;
+  max-height: 600px;
+  min-width: 500px;
 }
 
 .input-group { 
