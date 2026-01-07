@@ -36,10 +36,10 @@
 							<br>
 							<h3>
 								<ol>
-									<li>Enter the Antenna gain G, Carrier frequency f<sub>c</sub>, Height of the transmitter H<sub>t</sub>, Height of the receiver H<sub>r</sub>. </li>
-									<li>Start adjusting the position of the receiver by moving the slider.</li>
-									<li>Click on register to plot the pathloss at the given distance.</li>
-									<li>You can register pathloss for different distances and heights of antenna and observe the graph to understand the pathloss trends.</li>
+									<li id="t1-step-1" class="instruction-step active-step">Enter the Antenna gain G, Carrier frequency f<sub>c</sub>, Height of the transmitter H<sub>t</sub>, Height of the receiver H<sub>r</sub>. </li>
+									<li id="t1-step-2" class="instruction-step">Start adjusting the position of the receiver by moving the slider.</li>
+									<li id="t1-step-3" class="instruction-step">Click on register to plot the pathloss at the given distance.</li>
+									<li id="t1-step-4" class="instruction-step">You can register pathloss for different distances and heights of antenna and observe the graph to understand the pathloss trends.</li>
 								</ol>
 							</h3>
 							<br>
@@ -50,22 +50,22 @@
 					<div class="left-column box">
 						<div class="form-group">
 							<label for="G"><b>G (dB)</b></label>
-							<input type="number" id="G" class="form-control" value="0">
+							<input type="number" id="G" class="form-control">
 						</div>
 						
 						<div class="form-group">
 							<label for="fc"><b>f<sub>c</sub> (150-1500 MHz)</b></label>
-							<input type="number" id="fc" step="1" class="form-control" min="150" max="1500" value="900">
+							<input type="number" id="fc" step="1" class="form-control" min="150" max="1500">
 						</div>
 						
 						<div class="form-group">
 							<label for="tx-height"><b>H<sub>t</sub> (30-1000 meters)</b></label>
-							<input type="number" id="tx-height" min="30" max="1000" value="100" step="1" class="form-control">
+							<input type="number" id="tx-height" min="30" max="1000" step="1" class="form-control">
 						</div>
 						
 						<div class="form-group">
 							<label for="rx-height"><b>H<sub>r</sub> (1-10 meters)</b></label>
-							<input type="number" id="rx-height" min="1" max="10" value="3" step="1" class="form-control">
+							<input type="number" id="rx-height" min="1" max="10" step="1" class="form-control">
 						</div>
 					</div>
 					<div class="center-column box">

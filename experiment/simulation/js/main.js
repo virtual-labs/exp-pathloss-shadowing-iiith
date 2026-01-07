@@ -23,73 +23,91 @@ initializeTask1Simulation();
 //______________________________________________________________________________________________________________________________
 
 function initializeTask1Simulation() {
-    const slider = document.getElementById('distance-slider');
-    const transmitter = document.getElementById('transmitter');
-    const receiver = document.getElementById('receiver');
-    const txHeightInput = document.getElementById('tx-height');
-    const rxHeightInput = document.getElementById('rx-height');
-    const distanceDisplay = document.getElementById('distance');
-    const pathLossDisplay = document.getElementById('path-loss');
-    const registerBtn = document.getElementById('register-btn');
-    const plotBtn = document.getElementById('plot-btn');
-    const resetBtn = document.getElementById('resetBtn');
-    const chartCanvas = document.getElementById('pathloss-chart');
-    const valuesTableBody = document.querySelector('#values-table tbody');
+    const slider = document.getElementById('distance-slider');
+    const transmitter = document.getElementById('transmitter');
+    const receiver = document.getElementById('receiver');
+    const txHeightInput = document.getElementById('tx-height');
+    const rxHeightInput = document.getElementById('rx-height');
+    const fcInput = document.getElementById('fc'); // Added reference
+    const gInput = document.getElementById('G');   // Added reference
+    const distanceDisplay = document.getElementById('distance');
+    const pathLossDisplay = document.getElementById('path-loss');
+    const registerBtn = document.getElementById('register-btn');
+    const plotBtn = document.getElementById('plot-btn');
+    const resetBtn = document.getElementById('resetBtn');
+    const chartCanvas = document.getElementById('pathloss-chart');
+    const valuesTableBody = document.querySelector('#values-table tbody');
 
-    // CHANGE: maxDistance is now in km
-    const maxDistance = 100;
-    slider.min = 1;
-    slider.max = maxDistance;
-    let curves = [];
+    // CHANGE: maxDistance is now in km
+    const maxDistance = 100;
+    slider.min = 1;
+    slider.max = maxDistance;
+    let curves = [];
 
-    resetBtn.addEventListener('click', () => {
-        curves = [];
-        valuesTableBody.innerHTML = '';
-        if (Chart.getChart(chartCanvas)) {
-            Chart.getChart(chartCanvas).destroy();
-        }
+    // --- NEW: Instruction Highlight Logic ---
+    function setActiveStep(stepNumber) {
+        // 1. Remove active class from all steps
+        for (let i = 1; i <= 4; i++) {
+            const el = document.getElementById(`t1-step-${i}`);
+            if (el) el.classList.remove('active-step');
+        }
+        // 2. Add active class to the current step
+        const activeEl = document.getElementById(`t1-step-${stepNumber}`);
+        if (activeEl) activeEl.classList.add('active-step');
+    }
 
-        slider.value = slider.min;
-        updateAntennaHeights();
-        showNotification("All curves and data have been reset!");
-    });
+    // Event listeners to trigger step changes
+    const inputs = [txHeightInput, rxHeightInput, fcInput, gInput];
+    inputs.forEach(input => {
+        if(input) {
+            input.addEventListener('focus', () => setActiveStep(1)); // Focus on inputs -> Step 1
+            input.addEventListener('change', () => setActiveStep(2)); // Changed input -> Go to Step 2
+        }
+    });
 
-    // Okumura Model path loss calculation
-    function calculatePathLoss(G, distance_m, frequency_hz, ht, hr) {
-        const c = 3 * 1e8; // Speed of light
-        const lambda = c / frequency_hz;
+    // Slider interaction -> Go to Step 3
+    slider.addEventListener('mousedown', () => setActiveStep(3));
+    slider.addEventListener('input', () => setActiveStep(3));
 
-        // Free-Space Path Loss
-        const L_fcd = 20 * Math.log10((4 * Math.PI * distance_m) / lambda);
-        // Transmitter Antenna Height Gain G(ht)
-        // Valid for 30 < ht < 1000 m
-        const G_ht = 20 * Math.log10(ht / 200);
+    // ----------------------------------------
 
-        // Receiver Antenna Height Gain G(hr)
-        // Valid for 1 < hr < 10 m
-        let G_hr;
-        if (hr <= 3) {
-            G_hr = 10 * Math.log10(hr / 3);
-        } else { // 3 < hr < 10
-            G_hr = 20 * Math.log10(hr / 3);
-        }
+    resetBtn.addEventListener('click', () => {
+        curves = [];
+        valuesTableBody.innerHTML = '';
+        if (Chart.getChart(chartCanvas)) {
+            Chart.getChart(chartCanvas).destroy();
+        }
 
-        // Total path loss (ignoring Median Attenuation and Area Gain for this simplified model)
-        // The formula is L = L_fcd + A_mu - G_ht - G_hr
-        // We will assume A_mu (median attenuation) is 0 for this simulation.
+        slider.value = slider.min;
+        updateAntennaHeights();
+        showNotification("All curves and data have been reset!");
+        setActiveStep(1); // Reset instructions to Step 1
+    });
 
-        const path_loss = L_fcd - G_ht - G_hr;
-        return path_loss;
-    }
+    // Okumura Model path loss calculation
+    function calculatePathLoss(G, distance_m, frequency_hz, ht, hr) {
+        const c = 3 * 1e8; // Speed of light
+        const lambda = c / frequency_hz;
 
-    // UPDATED: This function now ONLY handles the transmitter antenna
+        // Free-Space Path Loss
+        const L_fcd = 20 * Math.log10((4 * Math.PI * distance_m) / lambda);
+        const G_ht = 20 * Math.log10(ht / 200);
+
+        let G_hr;
+        if (hr <= 3) {
+            G_hr = 10 * Math.log10(hr / 3);
+        } else { // 3 < hr < 10
+            G_hr = 20 * Math.log10(hr / 3);
+        }
+
+        const path_loss = L_fcd - G_ht - G_hr;
+        return path_loss;
+    }
+
     function updateTxAntennaImage(height, imgElement) {
         if (!imgElement) return;
-
-        // New breakpoints for the 30-1000m range
         if (height <= 150) {
             imgElement.src = './images/antenna-small.svg';
-            // Using a fixed width for consistency
             imgElement.style.width = '60px';
         } else if (height <= 500) {
             imgElement.src = './images/antenna-medium.svg';
@@ -101,41 +119,33 @@ function initializeTask1Simulation() {
         imgElement.style.height = 'auto';
     }
 
-    // NEW: This function handles the receiver antenna according to the new rules
-    function updateRxAntennaImage(height, imgElement) {
-        if (!imgElement) return;
-        // Always use the small antenna image
-        imgElement.src = './images/antenna-small.svg';
-
-        // Scale the width based on height (range 1-10m)
-        // This creates a width from ~31px to 40px, giving a subtle scaling effect.
-        const baseWidth = 28;
-        const scaleFactor = 1.2;
-        imgElement.style.width = `${baseWidth + (height * scaleFactor)}px`;
-        imgElement.style.height = 'auto';
-    }
+    function updateRxAntennaImage(height, imgElement) {
+        if (!imgElement) return;
+        imgElement.src = './images/antenna-small.svg';
+        const baseWidth = 28;
+        const scaleFactor = 1.2;
+        imgElement.style.width = `${baseWidth + (height * scaleFactor)}px`;
+        imgElement.style.height = 'auto';
+    }
 
 
-    function updateAntennaHeights() {
-        const txHeight = parseInt(txHeightInput.value) || 30;
-        const rxHeight = parseInt(rxHeightInput.value) || 1;
+    function updateAntennaHeights() {
+        const txHeight = parseInt(txHeightInput.value) || 30;
+        const rxHeight = parseInt(rxHeightInput.value) || 1;
 
-        // Call the specific update function for each antenna
-        updateTxAntennaImage(txHeight, transmitter.querySelector('img'));
-        updateRxAntennaImage(rxHeight, receiver.querySelector('img'));
-        updatePathLoss();
-    }
+        updateTxAntennaImage(txHeight, transmitter.querySelector('img'));
+        updateRxAntennaImage(rxHeight, receiver.querySelector('img'));
+        updatePathLoss();
+    }
 
-    function updateReceiverPosition() {
+    function updateReceiverPosition() {
         const distance_km = parseInt(slider.value);
         const experimentWidth = document.getElementById('experiment-area').offsetWidth;
         const receiverWidth = receiver.offsetWidth;
         const experimentPadding = 40;
         
-        // Define a fixed transmitter position (adjust this value as needed)
-        const transmitterRightEdge = experimentWidth * 0.2; // Transmitter occupies first 20% of width
+        const transmitterRightEdge = experimentWidth * 0.2; 
         
-        // Calculate receiver position in remaining 80% of space
         const availableWidth = experimentWidth - transmitterRightEdge - (2 * experimentPadding);
         const receiverPosition = transmitterRightEdge + experimentPadding + 
                             ((distance_km - 1) / (maxDistance - 1)) * availableWidth;
@@ -143,227 +153,185 @@ function initializeTask1Simulation() {
         receiver.style.left = `${receiverPosition - (receiverWidth / 2)}px`;
     }
 
-// 1. Update the updatePathLoss function to display distance in km and show negative pathloss
-function updatePathLoss() {
-    const distance_km = parseInt(slider.value);
-    const G = parseFloat(document.getElementById("G").value) || 0;
-    const txHeight = parseInt(txHeightInput.value) || 30;
-    const rxHeight = parseInt(rxHeightInput.value) || 1;
-    const fc_mhz = parseFloat(document.getElementById("fc").value) || 150;
+    function updatePathLoss() {
+        const distance_km = parseInt(slider.value);
+        const G = parseFloat(document.getElementById("G").value) || 0;
+        const txHeight = parseInt(txHeightInput.value) || 30;
+        const rxHeight = parseInt(rxHeightInput.value) || 1;
+        const fc_mhz = parseFloat(document.getElementById("fc").value) || 150;
 
-    // Convert units for calculation
-    const distance_m = distance_km * 1000;
-    const fc_hz = fc_mhz * 1e6;
+        const distance_m = distance_km * 1000;
+        const fc_hz = fc_mhz * 1e6;
 
-    // Update display with KM
-    distanceDisplay.textContent = `${distance_km} km`;
-    const pathLoss = calculatePathLoss(G, distance_m, fc_hz, txHeight, rxHeight);
-    // Display negative pathloss
-    pathLossDisplay.textContent = (-pathLoss).toFixed(2);
-    updateReceiverPosition();
-}
+        distanceDisplay.textContent = `${distance_km} km`;
+        const pathLoss = calculatePathLoss(G, distance_m, fc_hz, txHeight, rxHeight);
+        pathLossDisplay.textContent = (-pathLoss).toFixed(2);
+        updateReceiverPosition();
+    }
 
-function showNotification(message, isError = false) {
-    const notification = document.getElementById('notification');
-    notification.textContent = message;
-    notification.className = isError ? 'notification error' : 'notification';
-    notification.style.display = 'block';
+    function showNotification(message, isError = false) {
+        const notification = document.getElementById('notification');
+        notification.textContent = message;
+        notification.className = isError ? 'notification error' : 'notification';
+        notification.style.display = 'block';
 
-    setTimeout(() => {
-        notification.style.display = 'none';
-    }, 3000);
-}
+        setTimeout(() => {
+            notification.style.display = 'none';
+        }, 3000);
+    }
 
-// 2. Update the registerValues function to use negative pathloss and km for distance
-function registerValues() {
-    const distance = parseInt(slider.value); // This is already in km
-    const txHeight = parseInt(txHeightInput.value) || 1;
-    const rxHeight = parseInt(rxHeightInput.value) || 1;
-    const pathLossNegative = parseFloat(pathLossDisplay.textContent); // This is now negative
+    function registerValues() {
+        // --- NEW: Highlight Step 4 (Observation) when button is clicked ---
+        setActiveStep(4);
+        // ------------------------------------------------------------------
 
-    // Find existing curve for current height configuration
-    let curveIndex = curves.findIndex(curve =>
-        curve.txHeight === txHeight && curve.rxHeight === rxHeight
-    );
+        const distance = parseInt(slider.value); 
+        const txHeight = parseInt(txHeightInput.value) || 1;
+        const rxHeight = parseInt(rxHeightInput.value) || 1;
+        const pathLossNegative = parseFloat(pathLossDisplay.textContent); 
 
-    if (curveIndex === -1) {
-        // Create new curve if height configuration doesn't exist
-        if (curves.length >= 5) {
-            showNotification("Maximum of 5 different height configurations reached!", true);
+        let curveIndex = curves.findIndex(curve =>
+            curve.txHeight === txHeight && curve.rxHeight === rxHeight
+        );
+
+        if (curveIndex === -1) {
+            if (curves.length >= 5) {
+                showNotification("Maximum of 5 different height configurations reached!", true);
+                return;
+            }
+            curves.push({
+                txHeight,
+                rxHeight,
+                dataPoints: [],
+                color: `hsl(${curves.length * 60}, 70%, 50%)`
+            });
+            curveIndex = curves.length - 1;
+        }
+
+        let curve = curves[curveIndex];
+        const existingPointIndex = curve.dataPoints.findIndex(point => point.distance === distance);
+        if (existingPointIndex !== -1) {
+            showNotification("A measurement at this distance already exists for these heights!", true);
             return;
         }
-        curves.push({
-            txHeight,
-            rxHeight,
-            dataPoints: [],
-            color: `hsl(${curves.length * 60}, 70%, 50%)` // Different color for each curve
-        });
-        curveIndex = curves.length - 1;
+
+        curve.dataPoints.push({ distance, pathLoss: pathLossNegative });
+        curve.dataPoints.sort((a, b) => a.distance - b.distance);
+
+        updateTable();
+        showNotification(`Registered: Distance=${distance}km, Path Loss=${pathLossNegative}dB`);
+        plotGraph();
     }
 
-    let curve = curves[curveIndex];
-    // Check if we already have a measurement at this distance for this curve
-    const existingPointIndex = curve.dataPoints.findIndex(point => point.distance === distance);
-    if (existingPointIndex !== -1) {
-        showNotification("A measurement at this distance already exists for these heights!", true);
-        return;
-    }
-
-    // Add new point and sort by distance
-    curve.dataPoints.push({ distance, pathLoss: pathLossNegative });
-    curve.dataPoints.sort((a, b) => a.distance - b.distance);
-
-    // Update table
-    updateTable();
-    showNotification(`Registered: Distance=${distance}km, Path Loss=${pathLossNegative}dB (Tx=${txHeight}m, Rx=${rxHeight}m)`);
-
-    // Update plot
-    plotGraph();
-}
-
-// 3. Update the table headers and chart axes labels
-function updateTable() {
-    valuesTableBody.innerHTML = '';
-    curves.forEach((curve, index) => {
-        const headerRow = document.createElement('tr');
-        headerRow.innerHTML = `
-            <td colspan="3" style="background-color: ${curve.color}20">
-                Tx Height: ${curve.txHeight}m, Rx Height: ${curve.rxHeight}m
-            </td>
-        `;
-        valuesTableBody.appendChild(headerRow);
-        curve.dataPoints.forEach(point => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${point.distance}</td>
-                <td>${point.pathLoss}</td>
+    function updateTable() {
+        valuesTableBody.innerHTML = '';
+        curves.forEach((curve, index) => {
+            const headerRow = document.createElement('tr');
+            headerRow.innerHTML = `
+                <td colspan="3" style="background-color: ${curve.color}20">
+                    Tx Height: ${curve.txHeight}m, Rx Height: ${curve.rxHeight}m
+                </td>
             `;
-            valuesTableBody.appendChild(row);
+            valuesTableBody.appendChild(headerRow);
+            curve.dataPoints.forEach(point => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${point.distance}</td>
+                    <td>${point.pathLoss}</td>
+                `;
+                valuesTableBody.appendChild(row);
+            });
         });
-    });
-}
-
-// 4. Update the chart configuration to show correct labels
-function plotGraph() {
-    if (curves.length === 0) {
-        showNotification("No data to plot. Please register values first!", true);
-        return;
-    }
-    const ctx = chartCanvas.getContext('2d');
-    ctx.fillStyle = 'white';
-    ctx.fillRect(0, 0, chartCanvas.width, chartCanvas.height);
-
-    if (Chart.getChart(chartCanvas)) {
-        Chart.getChart(chartCanvas).destroy();
     }
 
-    // Set canvas background to white
-    chartCanvas.style.backgroundColor = 'white';
-    const datasets = curves.map(curve => ({
-        label: `Tx=${curve.txHeight}m, Rx=${curve.rxHeight}m`,
-        data: curve.dataPoints.map(point => ({
-            x: point.distance,
-            y: point.pathLoss
-        })),
-        borderColor: curve.color,
-        backgroundColor: 'rgba(118, 223, 237, 0.25)', // Transparent background
-        borderWidth: 2,
-        fill: true
-    }));
+    function plotGraph() {
+        if (curves.length === 0) {
+            showNotification("No data to plot. Please register values first!", true);
+            return;
+        }
+        const ctx = chartCanvas.getContext('2d');
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, chartCanvas.width, chartCanvas.height);
 
-    new Chart(chartCanvas, {
-        type: 'line',
-        data: {
-            datasets,
-            // Add explicit background color for the chart area
-            backgroundColor: 'white'
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                x: {
-                    type: 'linear',
-                    title: {
-                        display: true,
-                        text: 'Distance (km)', // Changed from meters to km
-                        color: '#333'
+        if (Chart.getChart(chartCanvas)) {
+            Chart.getChart(chartCanvas).destroy();
+        }
+
+        chartCanvas.style.backgroundColor = 'white';
+        const datasets = curves.map(curve => ({
+            label: `Tx=${curve.txHeight}m, Rx=${curve.rxHeight}m`,
+            data: curve.dataPoints.map(point => ({
+                x: point.distance,
+                y: point.pathLoss
+            })),
+            borderColor: curve.color,
+            backgroundColor: 'rgba(118, 223, 237, 0.25)', 
+            borderWidth: 2,
+            fill: true
+        }));
+
+        new Chart(chartCanvas, {
+            type: 'line',
+            data: {
+                datasets,
+                backgroundColor: 'white'
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        type: 'linear',
+                        title: { display: true, text: 'Distance (km)', color: '#333' },
+                        grid: { color: 'rgba(0, 0, 0, 0.1)', drawBackground: true },
+                        ticks: { color: '#333' }
                     },
-                    grid: {
-                        color: 'rgba(0, 0, 0, 0.1)',
-                        drawBackground: true
-                    },
-                    ticks: {
-                        color: '#333'
+                    y: {
+                        title: { display: true, text: 'Path Loss (dB)', color: '#333' },
+                        grid: { color: 'rgba(0, 0, 0, 0.1)', drawBackground: true },
+                        ticks: { color: '#333' }
                     }
                 },
-                y: {
-                    title: {
-                        display: true,
-                        text: 'Path Loss (dB)', // This will now show negative values
-                        color: '#333'
+                plugins: {
+                    legend: {
+                        labels: { color: '#333', usePointStyle: true, padding: 20 },
+                        backgroundColor: 'white'
                     },
-                    grid: {
-                        color: 'rgba(0, 0, 0, 0.1)',
-                        drawBackground: true
-                    },
-                    ticks: {
-                        color: '#333'
+                    tooltip: {
+                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                        titleColor: '#333',
+                        bodyColor: '#333',
+                        borderColor: '#ddd',
+                        borderWidth: 1
                     }
-                }
-            },
-            plugins: {
-                legend: {
-                    labels: {
-                        color: '#333',
-                        usePointStyle: true,
-                        padding: 20
-                    },
-                    backgroundColor: 'white'
                 },
-                tooltip: {
-                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                    titleColor: '#333',
-                    bodyColor: '#333',
-                    borderColor: '#ddd',
-                    borderWidth: 1
-                }
+                layout: { padding: { top: 10, right: 20, bottom: 10, left: 10 } }
             },
-            layout: {
-                padding: {
-                    top: 10,
-                    right: 20,
-                    bottom: 10,
-                    left: 10
+            plugins: [{
+                id: 'customCanvasBackgroundColor',
+                beforeDraw: (chart, args, options) => {
+                    const {ctx} = chart;
+                    ctx.save();
+                    ctx.globalCompositeOperation = 'destination-over';
+                    ctx.fillStyle = 'white';
+                    ctx.fillRect(0, 0, chart.width, chart.height);
+                    ctx.restore();
                 }
-            }
-        },
-        plugins: [{
-            id: 'customCanvasBackgroundColor',
-            beforeDraw: (chart, args, options) => {
-                const {ctx} = chart;
-                ctx.save();
-                ctx.globalCompositeOperation = 'destination-over';
-                ctx.fillStyle = 'white';
-                ctx.fillRect(0, 0, chart.width, chart.height);
-                ctx.restore();
-            }
-        }]
-    });
-}
+            }]
+        });
+    }
 
-    // Event Listeners
-    slider.addEventListener('input', updatePathLoss);
-    txHeightInput.addEventListener('input', updateAntennaHeights);
-    rxHeightInput.addEventListener('input', updateAntennaHeights);
-    registerBtn.addEventListener('click', registerValues);
+    slider.addEventListener('input', updatePathLoss);
+    txHeightInput.addEventListener('input', updateAntennaHeights);
+    rxHeightInput.addEventListener('input', updateAntennaHeights);
+    registerBtn.addEventListener('click', registerValues);
 
-    // The plot button listener can be removed if you don't have one, or kept if you do
-    if (plotBtn) plotBtn.addEventListener('click', plotGraph);
+    if (plotBtn) plotBtn.addEventListener('click', plotGraph);
 
-    // Initial call to set everything up
-    updateAntennaHeights();
-    updatePathLoss();
+    updateAntennaHeights();
+    updatePathLoss();
+    // Initialize step 1 active
+    setActiveStep(1); 
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~task_3~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

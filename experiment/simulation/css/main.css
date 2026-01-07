@@ -1198,6 +1198,28 @@ table {
   min-height: 300px; /* Ensure minimum height on all devices */
 }
 
+/* --- Add to the bottom of main.css --- */
+
+/* Instruction Highlighting Styles */
+.instruction-step {
+    opacity: 0.3; /* Translucent by default */
+    transition: all 0.4s ease;
+    color: #555;
+    padding: 5px 10px;
+    border-radius: 6px;
+    border-left: 3px solid transparent;
+}
+
+.instruction-step.active-step {
+    opacity: 1; /* Fully opaque */
+    color: #000;
+    font-weight: 600;
+    background-color: rgba(152, 203, 59, 0.15); /* Subtle green tint matching your theme */
+    border-left: 3px solid #98CB3B; /* Green accent bar */
+    transform: translateX(5px); /* Slight movement to emphasize */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
 /* Ensure center column has appropriate height on mobile */
 @media (max-width: 768px) {
   .center-column {
