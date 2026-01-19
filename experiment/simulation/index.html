@@ -36,10 +36,10 @@
 							<br>
 							<h3>
 								<ol>
-									<li>Enter the Antenna gain G, Carrier frequency f<sub>c</sub>, Height of the transmitter H<sub>t</sub>, Height of the receiver H<sub>r</sub>. </li>
-									<li>Start adjusting the position of the receiver by moving the slider.</li>
-									<li>Click on register to plot the pathloss at the given distance.</li>
-									<li>You can register pathloss for different distances and heights of antenna and observe the graph to understand the pathloss trends.</li>
+									<li id="t1-step-1" class="instruction-step active-step">Enter the Antenna gain G, Carrier frequency f<sub>c</sub>, Height of the transmitter H<sub>t</sub>, Height of the receiver H<sub>r</sub>. </li>
+									<li id="t1-step-2" class="instruction-step">Start adjusting the position of the receiver by moving the slider.</li>
+									<li id="t1-step-3" class="instruction-step">Click on register to plot the pathloss at the given distance.</li>
+									<li id="t1-step-4" class="instruction-step">You can register pathloss for different distances and heights of antenna and observe the graph to understand the pathloss trends.</li>
 								</ol>
 							</h3>
 							<br>
@@ -50,22 +50,22 @@
 					<div class="left-column box">
 						<div class="form-group">
 							<label for="G"><b>G (dB)</b></label>
-							<input type="number" id="G" class="form-control" value="0">
+							<input type="number" id="G" class="form-control">
 						</div>
 						
 						<div class="form-group">
 							<label for="fc"><b>f<sub>c</sub> (150-1500 MHz)</b></label>
-							<input type="number" id="fc" step="1" class="form-control" min="150" max="1500" value="900">
+							<input type="number" id="fc" step="1" class="form-control" min="150" max="1500">
 						</div>
 						
 						<div class="form-group">
 							<label for="tx-height"><b>H<sub>t</sub> (30-1000 meters)</b></label>
-							<input type="number" id="tx-height" min="30" max="1000" value="100" step="1" class="form-control">
+							<input type="number" id="tx-height" min="30" max="1000" step="1" class="form-control">
 						</div>
 						
 						<div class="form-group">
 							<label for="rx-height"><b>H<sub>r</sub> (1-10 meters)</b></label>
-							<input type="number" id="rx-height" min="1" max="10" value="3" step="1" class="form-control">
+							<input type="number" id="rx-height" min="1" max="10" step="1" class="form-control">
 						</div>
 					</div>
 					<div class="center-column box">
@@ -241,17 +241,29 @@
                     <div class="v-collapsible-instruction-container v-instruction-container" style="margin-top: 2%;">
                         <div class="v-collapsible is-size-5">Instructions</div>
                         <div class="v-content" style="text-align: left; padding-left: 10%; padding-right: 10%;">
-                            <h3> <b> To understand the effect of obstacles on the signal power, follow the following steps: </b> </h3>
-                            <h3>
-                                <ol>
-									<li> Imagine that there is a transmitter located at the center of the simulation area. </li>
-									<li> Place obstacles: To begin, click on any location within the simulation area. By clicking, an obstacle will be generated at the selected location. </li>
-									<li> After placing an obstacle, you will notice that the area behind the obstacle becomes reddish. This color change represents the decrease in signal strength due to the obstruction. The reddish areas indicate regions where the signal coverage is weak, meaning the radio waves are blocked or reflected by the obstacle, causing shadowing. </li>
-									<li> As you place more obstacles throughout the simulation area, you will notice that the blue areas become smaller and the red areas expand. This indicates that the signal coverage is being increasingly degraded as more obstacles are introduced.</li>
-								</ol>
-                            </h3>
-                            <br>
-                        </div>
+							<h3> <b> To understand the effect of obstacles on the signal power, follow the following steps: </b> </h3>
+							<br>
+							<!-- General context (not highlighted) -->
+							<p style="margin-bottom: 15px; color: #555;">Imagine that there is a transmitter located at the center of the simulation area.</p>
+							
+							<ol>
+								<!-- Step 1: Action -->
+								<li id="t3-step-1" class="instruction-step active-step">
+									<strong>Place obstacles:</strong> To begin, click on "New Environment" or adjust the Obstacle Density.
+								</li>
+								
+								<!-- Step 2: Observation (Corrected to match experiment) -->
+								<li id="t3-step-2" class="instruction-step">
+									<strong>Observe the Signal Path:</strong> When an obstacle blocks the direct path between the transmitter and receiver, the connecting line turns <span style="color: #e74c3c; font-weight: bold;">red</span> and the status changes to "Occluded", indicating signal loss.
+								</li>
+								
+								<!-- Step 3: High Density Observation -->
+								<li id="t3-step-3" class="instruction-step">
+									As you increase the obstacle density (e.g., above 600), the probability of the path being blocked increases significantly, degrading the overall reliability of the link.
+								</li>
+							</ol>
+							<br>
+						</div>
                     </div>
                 </div>
                 <div class="columns-container">
