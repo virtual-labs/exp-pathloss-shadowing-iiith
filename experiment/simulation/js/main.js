@@ -44,7 +44,7 @@ function initializeTask1Simulation() {
     slider.max = maxDistance;
     let curves = [];
 
-    // --- NEW: Instruction Highlight Logic ---
+    // --- Instruction Highlight Logic ---
     function setActiveStep(stepNumber) {
         // 1. Remove active class from all steps
         for (let i = 1; i <= 4; i++) {
@@ -56,18 +56,32 @@ function initializeTask1Simulation() {
         if (activeEl) activeEl.classList.add('active-step');
     }
 
-    // Event listeners to trigger step changes
+    // --- NEW: Event listeners with validation ---
     const inputs = [txHeightInput, rxHeightInput, fcInput, gInput];
     inputs.forEach(input => {
         if(input) {
-            input.addEventListener('focus', () => setActiveStep(1)); // Focus on inputs -> Step 1
-            input.addEventListener('change', () => setActiveStep(2)); // Changed input -> Go to Step 2
+            // When user focuses on the field, they are performing Step 1
+            input.addEventListener('focus', () => setActiveStep(1));
+
+            // As soon as valid data is entered, highlight Step 2 (Slider)
+            input.addEventListener('input', () => {
+                // checkValidity() ensures the number is within min/max and is a number
+                if (input.checkValidity() && input.value !== '') {
+                    setActiveStep(2); // Valid? Go to Slider instruction
+                } else {
+                    setActiveStep(1); // Invalid? Stay on Entry instruction
+                }
+            });
         }
     });
 
-    // Slider interaction -> Go to Step 3
+    // Slider interaction -> Go to Step 3 (Register)
+    // We use 'input' for dragging and 'change' for final position
     slider.addEventListener('mousedown', () => setActiveStep(3));
-    slider.addEventListener('input', () => setActiveStep(3));
+    slider.addEventListener('input', () => {
+        setActiveStep(3);
+        updatePathLoss(); // Ensure physics update runs
+    });
 
     // ----------------------------------------
 
@@ -181,9 +195,8 @@ function initializeTask1Simulation() {
     }
 
     function registerValues() {
-        // --- NEW: Highlight Step 4 (Observation) when button is clicked ---
+        // Highlight Step 4 (Observation) when button is clicked
         setActiveStep(4);
-        // ------------------------------------------------------------------
 
         const distance = parseInt(slider.value); 
         const txHeight = parseInt(txHeightInput.value) || 1;
@@ -330,8 +343,7 @@ function initializeTask1Simulation() {
 
     updateAntennaHeights();
     updatePathLoss();
-    // Initialize step 1 active
-    setActiveStep(1); 
+    setActiveStep(1); // Initialize step 1 active
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~task_3~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
