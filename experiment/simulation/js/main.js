@@ -605,17 +605,36 @@ function initializeTask3Simulation() {
         return calculateSignalAtPoint(currentRxDistance_km, currentRxAngleRad);
     }
 
+    // Replace the updateSimulation function in main.js with this corrected version:
     function updateSimulation() {
         const { totalPlDb, prPtDb, isOccluded } = calculateCurrentSignal();
         outTotalPl.textContent = totalPlDb.toFixed(2);
         outPrPt.textContent = prPtDb.toFixed(2);
         outStatus.textContent = isOccluded ? "Occluded" : "Line of Sight";
         statusIndicator.className = `status-indicator ${isOccluded ? 'status-occluded' : 'status-los'}`;
+        
         const currentRxRadius_px = currentRxDistance_km * worldScale_pxPerKm;
         const rxPos_px = {
             x: txPos_px.x + currentRxRadius_px * Math.cos(currentRxAngleRad),
             y: txPos_px.y + currentRxRadius_px * Math.sin(currentRxAngleRad)
         };
+        
+        // NEW: Update instruction highlighting based on current state
+        const density = parseFloat(densityInput.value);
+        
+        // If density is high (> 600), highlight Step 3
+        if (density > 600) {
+            setActiveStep(3);
+        } 
+        // If the signal is currently occluded, highlight Step 2 (Observation)
+        else if (isOccluded) {
+            setActiveStep(2);
+        }
+        // Otherwise, if we have obstacles but no occlusion, stay on Step 1 or 2
+        else if (obstacles.length > 0) {
+            setActiveStep(2);
+        }
+        
         drawSimulationCanvas(rxPos_px, currentRxRadius_px, isOccluded);
     }
 
