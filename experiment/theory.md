@@ -35,6 +35,11 @@ In general, the recieved power $P_r$ is dependent on the following factors:
 - Antenna gains of $T_X$ and $R_X$, $G_t$ and $G_r$ respectively. Antenna gain measures the efficiency of an antenna to focus the signal energy in a specific direction. We can say that a direction-specific antenna(the one with higher G) leads to a increase in $P_r$.
 - Distance between the $T_{X}$ and $R_{X}$, $d$. The recieved power decreases with distance. 
 - Signal wavelength, $\lambda$. Signals with higher wavelengths travel effectively over longer distances and can also bend around obstacles due to their low carrier frequency. This indicates that $P_r$ increases.
+- Since wavelength is inversely proportional to frequency $(\lambda = c/f)$, this implies that:<span style="color:blue">
+    - **Higher carrier frequency → smaller wavelength → larger pathloss**
+    - **Lower carrier frequency → larger wavelength → smaller pathloss and better coverage**
+Therefore, signals operating at **sub-GHz frequencies** (e.g., TV, cellular bands) typically achieve **longer propagation distances** and better penetration through obstacles, whereas **millimeter-wave and higher-frequency signals** experience **significantly higher attenuation** and require denser transmitter deployment.
+</span>
 
 From the Friis free-space transmission equation,
 
