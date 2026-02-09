@@ -1,5 +1,15 @@
 Link budget is an important aspect of wireless communication systems design. It accounts for all gains and losses. Two major factors that cause a variation in the received signal(loss) are Pathloss and shadowing. Thus, an accurate characterization of these two effects is crucial for planning the link budget. Let us now understand these effects in detail.
 
+<span style="color:blue">
+
+In wireless propagation analysis, variations in received signal power are broadly categorized into **large-scale fading** and **small-scale fading**.  
+Large-scale fading refers to the slow variation of the average received power over long distances and is primarily governed by **pathloss** and **shadowing**.  
+Small-scale fading, on the other hand, is caused by multipath interference due to reflections, scattering, and diffraction, leading to rapid fluctuations in signal amplitude over distances comparable to the signal wavelength.  
+
+Since link budget planning depends mainly on the **average received power**, this experiment focuses on **large-scale fading effects**, namely pathloss and shadowing.
+
+</span>
+
 ## Pathloss
 Pathloss is a measure of signal attenuation (i.e. reduction in received signal power) along its path from the $T_{X}$ to $R_{X}$. Mathematically, linear pathloss is defined as the ratio of the transmit power to received power given as
 
@@ -14,6 +24,12 @@ $$
     PL(\text{in dB}) = 10~ \log_{10} \frac{P_t}{P_{r}}
 \end{aligned}
 $$
+
+<span style="color:blue">
+
+The **decibel (dB) scale** is widely used in wireless communications because it converts multiplicative gains and losses into **additive quantities**, greatly simplifying link-budget calculations. It also allows convenient comparison of very large or very small power ratios using manageable numerical values.
+
+</span>
 
 In general, the recieved power $P_r$ is dependent on the following factors:
 - Antenna gains of $T_X$ and $R_X$, $G_t$ and $G_r$ respectively. Antenna gain measures the efficiency of an antenna to focus the signal energy in a specific direction. We can say that a direction-specific antenna(the one with higher G) leads to a increase in $P_r$.
@@ -47,6 +63,18 @@ $$
 $$
 
 where, $K$ is the pathloss at a reference distance $d_0$.
+
+<span style="color:blue">
+
+Here, the parameter $\gamma$ is known as the **pathloss exponent**, which captures how quickly the signal attenuates with distance in a given propagation environment.  
+Typical values include:
+- Free space: $\gamma = 2$  
+- Urban environments: $\gamma \approx 2.7$–$3.5$  
+- Indoor or obstructed environments: $\gamma \approx 3$–$5$  
+
+Thus, the **environment directly influences large-scale signal attenuation** through the pathloss exponent.
+
+</span>
  
  
 The above discussion pertains to free-space propagation. In terrestrial wireless networks, however, the presence of multipath components causes the pathloss characteristics to vary across different regions. This variation arises from the constructive and destructive interference of multipath signals at the receiver. To account for such effects, several empirical pathloss models have been developed, including the Okumura, Hata, and COST-231 models. These models incorporate environmental factors, the pathloss exponent, operating frequency, and the heights of the transmitter and receiver antennas to more accurately characterize signal attenuation. 
@@ -70,6 +98,12 @@ $$
 \end{aligned}
 $$
 
+<span style="color:blue">
+
+The random variable $\psi_{dB}$ represents **shadowing**, which models slow variations in received power caused by large obstacles such as buildings, foliage, and terrain. Unlike deterministic pathloss, shadowing is **statistical in nature** and varies from one location to another even at the same distance from the transmitter.
+
+</span>
+
 The most common model for this additional attenuation, $\psi$, is log-normal shadowing. This model has been empirically confirmed to accurately capture the variation in received signal power in both outdoor and indoor radio propagation environments.
 
 $$
@@ -79,6 +113,13 @@ $$
 $$
 
 where $\varepsilon=\frac{10}{\ln 10}$. $\mu_{\psi_{\text{dB}}}$ is the mean pathloss and mean attenuation due to the obstacles. The mean power varies with distance due to path loss and the fact that average attenuation from objects increases with distance due to the potential for a larger number of attenuating objects. $\sigma_{\psi_{\text{in dB}}}$ is the standard deviation of the environment ranging from four to thirteen.
+
+<span style="color:blue">
+
+Smaller values of $\sigma$ correspond to **open or rural environments**, while larger values indicate **dense urban or heavily obstructed indoor environments**.  
+Therefore, shadowing provides a **probabilistic description of environmental impact** on large-scale wireless signal propagation.
+
+</span>
 
 We can view the visual illustration of Pathloss and shadowing in the below figure.
 
