@@ -136,6 +136,40 @@
       },
       "correctAnswer": "a",
       "difficulty": "beginner"
+    },
+    {
+      "question": "In a simple link budget, if Transmit Power = 20 dBm, Tx Antenna Gain = 2 dBi, Pathloss = 100 dB, and Rx Antenna Gain = 3 dBi, what is the Received Power (Pr)?",
+      "answers": {
+        "a": "-75 dBm",
+        "b": "125 dBm",
+        "c": "-85 dBm",
+        "d": "75 dBm"
+      },
+      "explanations": {
+        "a": "Correct. Pr (dBm) = Pt(dBm) + Gt(dBi) + Gr(dBi) - PL(dB) = 20 + 2 + 3 - 100 = -75 dBm.",
+        "b": "This result likely comes from adding the pathloss instead of subtracting it.",
+        "c": "Check your addition of the antenna gains.",
+        "d": "Power cannot be positive if the pathloss significantly exceeds the gains and transmit power."
+      },
+      "correctAnswer": "a",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "When looking at a simulation plot of Pathloss (dB) vs. log-distance, what does the slope of the best-fit line represent?",
+      "answers": {
+        "a": "The carrier frequency",
+        "b": "The pathloss exponent (n)",
+        "c": "The transmit antenna height",
+        "d": "The shadowing variance"
+      },
+      "explanations": {
+        "a": "Frequency affects the intercept (reference loss), not necessarily the slope.",
+        "b": "In the log-distance model, the slope of the line plotted against log-distance is directly proportional to the pathloss exponent n.",
+        "c": "Antenna height affects the environment but the slope itself is the exponent.",
+        "d": "Shadowing variance is represented by the 'scatter' or deviation of points from the line, not the slope."
+      },
+      "correctAnswer": "b",
+      "difficulty": "advanced"
     }
   ]
 }
