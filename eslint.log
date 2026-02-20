@@ -1,0 +1,41 @@
+
+/home/runner/work/exp-pathloss-shadowing-iiith/exp-pathloss-shadowing-iiith/experiment/simulation/js/main.js
+    1:10  warning  'openPart' is defined but never used  no-unused-vars
+    2:1   warning  Irregular whitespace not allowed      no-irregular-whitespace
+    2:3   warning  Irregular whitespace not allowed      no-irregular-whitespace
+    3:1   warning  Irregular whitespace not allowed      no-irregular-whitespace
+    3:3   warning  Irregular whitespace not allowed      no-irregular-whitespace
+    4:1   warning  Irregular whitespace not allowed      no-irregular-whitespace
+    4:3   warning  Irregular whitespace not allowed      no-irregular-whitespace
+    5:1   warning  Irregular whitespace not allowed      no-irregular-whitespace
+    5:3   warning  Irregular whitespace not allowed      no-irregular-whitespace
+    5:5   warning  Irregular whitespace not allowed      no-irregular-whitespace
+    6:1   warning  Irregular whitespace not allowed      no-irregular-whitespace
+    6:3   warning  Irregular whitespace not allowed      no-irregular-whitespace
+    7:1   warning  Irregular whitespace not allowed      no-irregular-whitespace
+    7:3   warning  Irregular whitespace not allowed      no-irregular-whitespace
+    8:1   warning  Irregular whitespace not allowed      no-irregular-whitespace
+    8:3   warning  Irregular whitespace not allowed      no-irregular-whitespace
+    9:1   warning  Irregular whitespace not allowed      no-irregular-whitespace
+    9:3   warning  Irregular whitespace not allowed      no-irregular-whitespace
+    9:5   warning  Irregular whitespace not allowed      no-irregular-whitespace
+   10:1   warning  Irregular whitespace not allowed      no-irregular-whitespace
+   10:3   warning  Irregular whitespace not allowed      no-irregular-whitespace
+   11:1   warning  Irregular whitespace not allowed      no-irregular-whitespace
+   11:3   warning  Irregular whitespace not allowed      no-irregular-whitespace
+   12:1   warning  Irregular whitespace not allowed      no-irregular-whitespace
+   12:3   warning  Irregular whitespace not allowed      no-irregular-whitespace
+   16:1   warning  Irregular whitespace not allowed      no-irregular-whitespace
+   16:3   warning  Irregular whitespace not allowed      no-irregular-whitespace
+   91:13  warning  'Chart' is not defined                no-undef
+   92:13  warning  'Chart' is not defined                no-undef
+  241:32  warning  'index' is defined but never used     no-unused-vars
+  269:13  warning  'Chart' is not defined                no-undef
+  270:13  warning  'Chart' is not defined                no-undef
+  286:13  warning  'Chart' is not defined                no-undef
+  325:37  warning  'args' is defined but never used      no-unused-vars
+  325:43  warning  'options' is defined but never used   no-unused-vars
+  642:29  warning  'Chart' is not defined                no-undef
+
+✖ 36 problems (0 errors, 36 warnings)
+
