@@ -119,6 +119,40 @@
       },
       "correctAnswer": "b",
       "difficulty": "beginner"
+    },
+    {
+      "question": "Why is the decibel (dB) scale commonly used to represent pathloss and signal strength?",
+      "answers": {
+        "a": "It makes the numbers larger and easier to read",
+        "b": "It allows multiplicative gains and losses to be handled via simple addition and subtraction",
+        "c": "It is a linear scale that represents absolute power levels",
+        "d": "It eliminates the need for complex mathematical models"
+      },
+      "explanations": {
+        "a": "The scale actually compresses large ranges of values into smaller, manageable numbers.",
+        "b": "Logarithmic scales convert multiplication of power ratios into addition of dB values, simplifying link budget analysis.",
+        "c": "The dB scale is logarithmic, not linear.",
+        "d": "Mathematical models are still required; the scale just changes how values are represented."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Which of the following best describes the difference between large-scale fading and small-scale fading?",
+      "answers": {
+        "a": "Large-scale fading occurs over long distances; small-scale fading occurs over very short distances (wavelength scale)",
+        "b": "Large-scale fading is due to multipath; small-scale fading is due to pathloss",
+        "c": "There is no physical difference; the terms are interchangeable",
+        "d": "Small-scale fading describes the average signal power over a large area"
+      },
+      "explanations": {
+        "a": "Large-scale fading (pathloss and shadowing) represents mean signal change over distance, while small-scale fading involves rapid fluctuations due to multipath interference.",
+        "b": "This is reversed; multipath causes small-scale fading.",
+        "c": "They represent different physical phenomena and statistical models.",
+        "d": "That is the definition of large-scale fading."
+      },
+      "correctAnswer": "a",
+      "difficulty": "intermediate"
     }
   ]
 }
