@@ -48,24 +48,44 @@
 				</div>
 				<div class="columns-container">
 					<div class="left-column box">
+						<!-- Replace the G input section with this enhanced version -->
 						<div class="form-group">
-							<label for="G"><b>G (dB)</b></label>
-							<input type="number" id="G" class="form-control">
+							<label for="G"><b>G (dB)</b> 
+								<span class="info-icon" title="Antenna gain affects signal strength. Typical values: 0-20 dB">ⓘ</span>
+							</label>
+							<input type="number" id="G" class="form-control" min="-10" max="30" step="0.1" required>
+							<small class="form-text">Antenna gain in decibels (Range: -10 to 30 dB)</small>
+							<div class="validation-feedback" id="G-feedback"></div>
 						</div>
-						
+
+						<!-- Replace the fc input section -->
 						<div class="form-group">
-							<label for="fc"><b>f<sub>c</sub> (150-1500 MHz)</b></label>
-							<input type="number" id="fc" step="1" class="form-control" min="150" max="1500">
+							<label for="fc"><b>f<sub>c</sub> (MHz)</b>
+								<span class="info-icon" title="Carrier frequency determines wavelength. Higher frequency = more path loss">ⓘ</span>
+							</label>
+							<input type="number" id="fc" step="1" class="form-control" min="150" max="1500" required>
+							<small class="form-text">Carrier frequency (Range: 150-1500 MHz)</small>
+							<div class="validation-feedback" id="fc-feedback"></div>
 						</div>
-						
+
+						<!-- Replace the tx-height input section -->
 						<div class="form-group">
-							<label for="tx-height"><b>H<sub>t</sub> (30-1000 meters)</b></label>
-							<input type="number" id="tx-height" min="30" max="1000" step="1" class="form-control">
+							<label for="tx-height"><b>H<sub>t</sub> (meters)</b>
+								<span class="info-icon" title="Transmitter antenna height. Higher placement reduces path loss">ⓘ</span>
+							</label>
+							<input type="number" id="tx-height" min="30" max="1000" step="1" class="form-control" required>
+							<small class="form-text">Transmitter height (Range: 30-1000 m)</small>
+							<div class="validation-feedback" id="tx-height-feedback"></div>
 						</div>
-						
+
+						<!-- Replace the rx-height input section -->
 						<div class="form-group">
-							<label for="rx-height"><b>H<sub>r</sub> (1-10 meters)</b></label>
-							<input type="number" id="rx-height" min="1" max="10" step="1" class="form-control">
+							<label for="rx-height"><b>H<sub>r</sub> (meters)</b>
+								<span class="info-icon" title="Receiver antenna height affects signal reception. Mobile devices: 1-2m, buildings: 3-10m">ⓘ</span>
+							</label>
+							<input type="number" id="rx-height" min="1" max="10" step="1" class="form-control" required>
+							<small class="form-text">Receiver height (Range: 1-10 m)</small>
+							<div class="validation-feedback" id="rx-height-feedback"></div>
 						</div>
 					</div>
 					<div class="center-column box">
@@ -88,22 +108,68 @@
 					</div>
 					
 					<div class="right-column box">
-						<div class="column is-3-desktop is-10-tablet is-5-mobile">
-							<div class="box-question">
-								<div class="bold-text"><b>Observations</b></div>
-                                 <br>
-									<div class="metrics">
-										<div class="metric-card" >
-											<div class="metric-value"><span id="distance">0</span> m</div>
-											<div class="metric-label">Distance</div>
-										</div>
-										<div class="metric-card">
-											<div class="metric-value"><span id="path-loss">0</span> dB</div>
-											<div class="metric-label">Path Loss</div>
-										</div>
-									</div>
-								
+						<div class="box-question" style="width: 100%;">
+							<div class="bold-text" style="font-size: 1.3rem; margin-bottom: 15px;"><b>Observations</b></div>
 							
+							<div style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); padding: 15px; border-radius: 10px; margin-bottom: 15px; border-left: 5px solid #2196F3; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+								<h5 style="color: #1565C0; margin: 0 0 12px 0; font-size: 0.9rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Current Measurement</h5>
+								<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+									<div style="background: white; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+										<div style="font-size: 2rem; font-weight: 700; color: #1976D2; line-height: 1;"><span id="distance">0</span></div>
+										<div style="font-size: 1.2rem; color: #1976D2; margin-top: 5px;">km</div>
+										<div style="font-size: 0.85rem; color: #666; margin-top: 8px; font-weight: 500;">Distance</div>
+									</div>
+									<div style="background: white; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+										<div style="font-size: 2rem; font-weight: 700; color: #1976D2; line-height: 1;"><span id="path-loss">0</span></div>
+										<div style="font-size: 1.2rem; color: #1976D2; margin-top: 5px;">dB</div>
+										<div style="font-size: 0.85rem; color: #666; margin-top: 8px; font-weight: 500;">Path Loss</div>
+									</div>
+								</div>
+							</div>
+							
+							<div style="background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); padding: 15px; border-radius: 10px; margin-bottom: 15px; border-left: 5px solid #FF9800; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+								<h5 style="color: #E65100; margin: 0 0 12px 0; font-size: 0.9rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Path Loss Components</h5>
+								<div style="background: white; padding: 12px; border-radius: 8px;">
+									<div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f0;">
+										<span style="font-size: 0.85rem; font-weight: 600; color: #333;">Free Space Loss:</span>
+										<span style="font-size: 0.9rem; font-weight: 700; color: #E65100;"><span id="free-space-loss">0</span> dB</span>
+									</div>
+									<div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f0;">
+										<span style="font-size: 0.85rem; font-weight: 600; color: #333;">Height Gain (H<sub>t</sub>):</span>
+										<span style="font-size: 0.9rem; font-weight: 700; color: #E65100;"><span id="ht-gain">0</span> dB</span>
+									</div>
+									<div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0;">
+										<span style="font-size: 0.85rem; font-weight: 600; color: #333;">Height Gain (H<sub>r</sub>):</span>
+										<span style="font-size: 0.9rem; font-weight: 700; color: #E65100;"><span id="hr-gain">0</span> dB</span>
+									</div>
+								</div>
+								<div style="margin-top: 10px; padding: 8px; background: rgba(255,152,0,0.1); border-radius: 6px;">
+									<p style="margin: 0; font-size: 0.75rem; color: #666; text-align: center; font-style: italic;">
+										Total = Free Space Loss - Height Gains
+									</p>
+								</div>
+							</div>
+							
+							<div id="statistics-section" style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); padding: 15px; border-radius: 10px; border-left: 5px solid #4CAF50; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: none;">
+								<h5 style="color: #2E7D32; margin: 0 0 12px 0; font-size: 0.9rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Session Statistics</h5>
+								<div style="background: white; padding: 12px; border-radius: 8px;">
+									<div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #f0f0f0;">
+										<span style="font-size: 0.85rem; font-weight: 600; color: #333;">📊 Registered Points:</span>
+										<span style="font-size: 0.9rem; font-weight: 700; color: #2E7D32;"><span id="total-points">0</span></span>
+									</div>
+									<div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #f0f0f0;">
+										<span style="font-size: 0.85rem; font-weight: 600; color: #333;">⚙️ Configurations:</span>
+										<span style="font-size: 0.9rem; font-weight: 700; color: #2E7D32;"><span id="total-configs">0</span></span>
+									</div>
+									<div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #f0f0f0;">
+										<span style="font-size: 0.85rem; font-weight: 600; color: #333;">📉 Min Path Loss:</span>
+										<span style="font-size: 0.9rem; font-weight: 700; color: #2E7D32;"><span id="min-loss">N/A</span></span>
+									</div>
+									<div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0;">
+										<span style="font-size: 0.85rem; font-weight: 600; color: #333;">📈 Max Path Loss:</span>
+										<span style="font-size: 0.9rem; font-weight: 700; color: #2E7D32;"><span id="max-loss">N/A</span></span>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -188,23 +254,21 @@
 					</div>
 					
 					<div class="right-column box">
-						<div class="column is-3-desktop is-10-tablet is-5-mobile">
-							<div class="box-question">
-								<div class="bold-text">Observations</div>
-								<div class="sidebar">
-									<div class="metrics">
-										<div class="metric-card">
-											<div class="metric-value"><span id="distance">0</span> m</div>
-											<div class="metric-label">Distance</div>
-										</div>
-										<div class="metric-card">
-											<div class="metric-value"><span id="path-loss">0</span> dB</div>
-											<div class="metric-label">Path Loss</div>
-										</div>
+						<div class="box-question" style="width: 100%;">
+							<div class="bold-text">Observations</div>
+							<div class="sidebar">
+								<div class="metrics">
+									<div class="metric-card">
+										<div class="metric-value"><span id="distance">0</span> m</div>
+										<div class="metric-label">Distance</div>
+									</div>
+									<div class="metric-card">
+										<div class="metric-value"><span id="path-loss">0</span> dB</div>
+										<div class="metric-label">Path Loss</div>
 									</div>
 								</div>
-								<div id="observations">
-								</div>
+							</div>
+							<div id="observations">
 							</div>
 						</div>
 					</div>

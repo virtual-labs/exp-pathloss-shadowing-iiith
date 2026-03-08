@@ -73,6 +73,51 @@ function initializeTask1Simulation() {
                 }
             });
         }
+
+        // Add real-time validation to all inputs
+        if (gInput) {
+            gInput.addEventListener('blur', () => {
+                validateInput(gInput, -10, 30, 'Antenna Gain');
+            });
+            gInput.addEventListener('input', () => {
+                if (gInput.value !== '') {
+                    validateInput(gInput, -10, 30, 'Antenna Gain');
+                }
+            });
+        }
+
+        if (fcInput) {
+            fcInput.addEventListener('blur', () => {
+                validateInput(fcInput, 150, 1500, 'Carrier Frequency');
+            });
+            fcInput.addEventListener('input', () => {
+                if (fcInput.value !== '') {
+                    validateInput(fcInput, 150, 1500, 'Carrier Frequency');
+                }
+            });
+        }
+
+        if (txHeightInput) {
+            txHeightInput.addEventListener('blur', () => {
+                validateInput(txHeightInput, 30, 1000, 'Transmitter Height');
+            });
+            txHeightInput.addEventListener('input', () => {
+                if (txHeightInput.value !== '') {
+                    validateInput(txHeightInput, 30, 1000, 'Transmitter Height');
+                }
+            });
+        }
+
+        if (rxHeightInput) {
+            rxHeightInput.addEventListener('blur', () => {
+                validateInput(rxHeightInput, 1, 10, 'Receiver Height');
+            });
+            rxHeightInput.addEventListener('input', () => {
+                if (rxHeightInput.value !== '') {
+                    validateInput(rxHeightInput, 1, 10, 'Receiver Height');
+                }
+            });
+        }
     });
 
     // Slider interaction -> Go to Step 3 (Register)
@@ -93,8 +138,22 @@ function initializeTask1Simulation() {
         }
 
         slider.value = slider.min;
+        
+        // Clear validation states
+        [gInput, fcInput, txHeightInput, rxHeightInput].forEach(input => {
+            if (input) {
+                input.classList.remove('is-invalid', 'is-valid');
+                const feedback = document.getElementById(`${input.id}-feedback`);
+                if (feedback) {
+                    feedback.textContent = '';
+                    feedback.className = 'validation-feedback';
+                }
+            }
+        });
+        
         updateAntennaHeights();
-        showNotification("All curves and data have been reset!");
+        updateStatistics(); // Hide statistics
+        showNotification("🔄 All data has been reset!");
         setActiveStep(1); // Reset instructions to Step 1
     });
 
@@ -177,10 +236,13 @@ function initializeTask1Simulation() {
         const distance_m = distance_km * 1000;
         const fc_hz = fc_mhz * 1e6;
 
-        distanceDisplay.textContent = `${distance_km} km`;
+        distanceDisplay.textContent = `${distance_km}`;
         const pathLoss = calculatePathLoss(G, distance_m, fc_hz, txHeight, rxHeight);
         pathLossDisplay.textContent = (-pathLoss).toFixed(2);
         updateReceiverPosition();
+        
+        // Update detailed components
+        updatePathLossComponents();
     }
 
     function showNotification(message, isError = false) {
@@ -194,7 +256,115 @@ function initializeTask1Simulation() {
         }, 3000);
     }
 
+    // Enhanced input validation with real-time feedback
+    function validateInput(inputElement, min, max, fieldName) {
+        const value = parseFloat(inputElement.value);
+        const feedbackElement = document.getElementById(`${inputElement.id}-feedback`);
+        
+        if (!feedbackElement) return true; // Skip if feedback element doesn't exist
+        
+        // Clear previous state
+        inputElement.classList.remove('is-invalid', 'is-valid');
+        feedbackElement.textContent = '';
+        feedbackElement.className = 'validation-feedback';
+        
+        // Check if empty
+        if (inputElement.value === '' || isNaN(value)) {
+            inputElement.classList.add('is-invalid');
+            feedbackElement.className = 'validation-feedback invalid';
+            feedbackElement.textContent = `${fieldName} is required`;
+            return false;
+        }
+        
+        // Check range
+        if (value < min || value > max) {
+            inputElement.classList.add('is-invalid');
+            feedbackElement.className = 'validation-feedback invalid';
+            feedbackElement.textContent = `${fieldName} must be between ${min} and ${max}`;
+            return false;
+        }
+        
+        // Valid input
+        inputElement.classList.add('is-valid');
+        feedbackElement.className = 'validation-feedback valid';
+        feedbackElement.textContent = '✓ Valid';
+        return true;
+    }
+
+    // Validate all inputs before calculation
+    function validateAllInputs() {
+        const validations = [
+            validateInput(gInput, -10, 30, 'Antenna Gain'),
+            validateInput(fcInput, 150, 1500, 'Carrier Frequency'),
+            validateInput(txHeightInput, 30, 1000, 'Transmitter Height'),
+            validateInput(rxHeightInput, 1, 10, 'Receiver Height')
+        ];
+        
+        return validations.every(result => result === true);
+    }
+
+    // Update detailed path loss components
+    function updatePathLossComponents() {
+        const distance_km = parseInt(slider.value);
+        const G = parseFloat(gInput.value) || 0;
+        const txHeight = parseInt(txHeightInput.value) || 30;
+        const rxHeight = parseInt(rxHeightInput.value) || 1;
+        const fc_mhz = parseFloat(fcInput.value) || 150;
+        
+        const distance_m = distance_km * 1000;
+        const fc_hz = fc_mhz * 1e6;
+        const c = 3 * 1e8;
+        const lambda = c / fc_hz;
+        
+        // Calculate components
+        const freeSpaceLoss = 20 * Math.log10((4 * Math.PI * distance_m) / lambda);
+        const htGain = 20 * Math.log10(txHeight / 200);
+        
+        let hrGain;
+        if (rxHeight <= 3) {
+            hrGain = 10 * Math.log10(rxHeight / 3);
+        } else {
+            hrGain = 20 * Math.log10(rxHeight / 3);
+        }
+        
+        // Update display
+        document.getElementById('free-space-loss').textContent = freeSpaceLoss.toFixed(2);
+        document.getElementById('ht-gain').textContent = htGain.toFixed(2);
+        document.getElementById('hr-gain').textContent = hrGain.toFixed(2);
+    }
+
+    // Update session statistics
+    function updateStatistics() {
+        const totalPoints = curves.reduce((sum, curve) => sum + curve.dataPoints.length, 0);
+        const totalConfigs = curves.length;
+        
+        let allPathLosses = [];
+        curves.forEach(curve => {
+            curve.dataPoints.forEach(point => {
+                allPathLosses.push(point.pathLoss);
+            });
+        });
+        
+        const statsSection = document.getElementById('statistics-section');
+        
+        if (totalPoints > 0) {
+            statsSection.style.display = 'block';
+            document.getElementById('total-points').textContent = totalPoints;
+            document.getElementById('total-configs').textContent = totalConfigs;
+            document.getElementById('min-loss').textContent = Math.min(...allPathLosses).toFixed(2) + ' dB';
+            document.getElementById('max-loss').textContent = Math.max(...allPathLosses).toFixed(2) + ' dB';
+        } else {
+            statsSection.style.display = 'none';
+        }
+    }
+
     function registerValues() {
+        // Validate all inputs first
+        if (!validateAllInputs()) {
+            showNotification("⚠️ Please correct the invalid inputs before registering!", true);
+            return;
+        }
+        
         // Highlight Step 4 (Observation) when button is clicked
         setActiveStep(4);
 
@@ -209,7 +379,7 @@ function initializeTask1Simulation() {
 
         if (curveIndex === -1) {
             if (curves.length >= 5) {
-                showNotification("Maximum of 5 different height configurations reached!", true);
+                showNotification("⚠️ Maximum of 5 different height configurations reached!", true);
                 return;
             }
             curves.push({
@@ -224,7 +394,7 @@ function initializeTask1Simulation() {
         let curve = curves[curveIndex];
         const existingPointIndex = curve.dataPoints.findIndex(point => point.distance === distance);
         if (existingPointIndex !== -1) {
-            showNotification("A measurement at this distance already exists for these heights!", true);
+            showNotification("⚠️ A measurement at this distance already exists for these heights!", true);
             return;
         }
 
@@ -232,7 +402,8 @@ function initializeTask1Simulation() {
         curve.dataPoints.sort((a, b) => a.distance - b.distance);
 
         updateTable();
-        showNotification(`Registered: Distance=${distance}km, Path Loss=${pathLossNegative}dB`);
+        updateStatistics(); // Update statistics display
+        showNotification(`✓ Registered: Distance=${distance}km, Path Loss=${pathLossNegative}dB`);
         plotGraph();
     }
 
