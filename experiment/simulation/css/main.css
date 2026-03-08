@@ -220,7 +220,7 @@ th{
   border: 2px solid #98CB3B;
   border-radius: 10px;
   padding: 20px;
-  max-height: 500px; /* Set maximum height */
+  height: auto; /* Set maximum height */
   min-width: 300px; /* Set minimum width */
 }
 
@@ -241,7 +241,8 @@ th{
   border: 2px solid #98CB3B;
   border-radius: 10px;
   padding: 20px;
-  height: 300px;
+  height: auto;
+  min-height: 400px;
   min-width: 360px; /* Set minimum width */
 }
 
@@ -1218,6 +1219,233 @@ table {
     border-left: 3px solid #98CB3B; /* Green accent bar */
     transform: translateX(5px); /* Slight movement to emphasize */
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* Validation feedback styles */
+.validation-feedback {
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
+    min-height: 1.2rem;
+}
+
+.validation-feedback.valid {
+    color: #28a745;
+    font-weight: 500;
+}
+
+.validation-feedback.invalid {
+    color: #dc3545;
+    font-weight: 500;
+}
+
+.form-control.is-valid {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.15rem rgba(40, 167, 69, 0.15);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%2328a745' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+.form-control.is-invalid {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.15rem rgba(220, 53, 69, 0.15);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23dc3545' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+/* Info icon tooltip */
+.info-icon {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    background-color: #2196F3;
+    color: white;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 18px;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: help;
+    margin-left: 5px;
+    transition: all 0.3s ease;
+}
+
+.info-icon:hover {
+    background-color: #1976D2;
+    transform: scale(1.1);
+}
+
+/* Form helper text */
+.form-text {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: #6c757d;
+    font-style: italic;
+}
+
+/* Enhanced metric display styles */
+.box-question {
+    background: #fafafa;
+    padding: 15px;
+    border-radius: 12px;
+}
+
+.bold-text {
+    font-weight: 700;
+    color: #333;
+    border-bottom: 3px solid #4CAF50;
+    padding-bottom: 8px;
+    margin-bottom: 15px;
+}
+
+/* Smooth transitions for all metric boxes */
+.box-question > div {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.box-question > div:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15) !important;
+}
+
+/* Info icon tooltip enhancement */
+.info-icon {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    background-color: #2196F3;
+    color: white;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 18px;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: help;
+    margin-left: 5px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.info-icon:hover {
+    background-color: #1976D2;
+    transform: scale(1.15);
+}
+
+.info-icon:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    white-space: nowrap;
+    font-size: 11px;
+    font-weight: normal;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.info-icon:hover::before {
+    content: '';
+    position: absolute;
+    bottom: 115%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: #333;
+    z-index: 1000;
+}
+
+/* Validation feedback styles */
+.validation-feedback {
+    font-size: 0.8rem;
+    margin-top: 4px;
+    display: block;
+    min-height: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.validation-feedback.valid {
+    color: #28a745;
+    font-weight: 600;
+}
+
+.validation-feedback.invalid {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+.form-control.is-valid {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.15rem rgba(40, 167, 69, 0.15);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%2328a745' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+.form-control.is-invalid {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.15rem rgba(220, 53, 69, 0.15);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23dc3545' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+/* Form helper text */
+.form-text {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.8rem;
+    color: #6c757d;
+    font-style: italic;
+}
+
+/* Enhanced form group spacing */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #444;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .box-question > div {
+        margin-bottom: 12px;
+    }
+    
+    .box-question h5 {
+        font-size: 0.85rem !important;
+    }
+    
+    .info-icon:hover::after {
+        font-size: 10px;
+        padding: 6px 10px;
+    }
+}
+
+/* Metric cards enhancement */
+.metric-card {
+    transition: transform 0.2s ease;
+}
+
+.metric-card:hover {
+    transform: translateY(-2px);
 }
 
 /* Ensure center column has appropriate height on mobile */
