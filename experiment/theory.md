@@ -5,7 +5,7 @@ In wireless propagation analysis, variations in received signal power are broadl
 Since link budget planning depends mainly on the **average received power**, this experiment focuses on **large-scale fading effects**, namely pathloss and shadowing.
 
 ## Pathloss
-Pathloss is a measure of signal attenuation (i.e. reduction in received signal power) along its path from the $T_{X}$ to $R_{X}$. Mathematically, linear pathloss is defined as the ratio of the transmit power to received power given as
+Pathloss is a measure of signal attenuation (i.e. reduction in received signal power) along its path from the $Tx$ to $Rx$. Mathematically, linear pathloss is defined as the ratio of the transmit power to received power given as
 
 $$
 \begin{aligned}
